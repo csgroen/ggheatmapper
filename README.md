@@ -6,8 +6,213 @@ devtools::install_github("csgroen/ggheatmap")
 ```
 Also check out the documentation:
 ```r
-? ggheatmap
-vignette("ggheatmap")
+?? ggheatmap
 ```
 
 **NOTE:** this project is still very much in early-alpha. But if you want to try it, please report bugs as issues here on Github. :)
+
+# Guide to ggheatmap 
+
+`ggheatmap` is built using `ggplot2` and the `patchwork` framework for aligning plots.
+It supports adding into the heatmap and all the powerful tweaks enabled by `theme`s in ggplot,
+and helps you align more information about your data to the original heatmap to make "complex
+heatmaps" with a more modern and *tweakable* framework.
+
+## Using a matrix as your table
+The simplest, yet less powerful, way to use `ggheatmap` is with a matrix as-is.
+Here, we demonstrate with a subset of a gene expression matrix for bladder cancer
+samples:
+
+```{r fig.width=6, fig.height=3}
+library(tidyverse)
+library(patchwork)
+library(ggheatmap)
+
+data(tcgaBLCA_ex)
+gexp <- tcgaBLCA_ex$gexp
+
+gghm <- ggheatmap(gexp,
+          hm_colors = 'RdBu',
+          hm_color_values = scales::rescale(c(-4,-2,-1,-0.5,-0.25,0,0.25,0.5,1,2,4,6)),
+          scale = TRUE,
+          center = TRUE,
+          show_dend_row = TRUE,
+          colors_title = "Scaled expression (log2 UQ)",
+          show_colnames = FALSE)
+gghm
+```
+This method still will support extending with `align_to_hm` but would not support
+`add_tracks`. You can still modify this by using `&` and adding `theme`, for example:
+
+```{r fig.width=6, fig.height=3}
+gghm &
+  theme(axis.text = element_text(size = 6))
+  
+  # Using tables with more variables
+
+If transpose our original table and extended it with new variables, we can unlock
+more features using `ggheatmap`. 
+
+```{r}
+sample_annot <- tcgaBLCA_ex$sample_annot %>% as_tibble()
+genes <- rownames(gexp)
+tcgaBLCA_tb <- gexp %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  left_join(sample_annot, by = "sample") %>%
+  tibble() %>%
+  group_by(consensusClass)
+tcgaBLCA_tb
+```
+
+One of the additional features we unlock is using `grouping` with `group_by` to
+make semi-supervised heatmaps. In this case, we need to say which column contains
+the IDs that will be the *columns* of the heatmap (in this case, `colv = 'sample'`),
+and what are the columns we want to plot as *rows* (`rowv = genes`). Other
+parameters here are graphical, for demonstration:
+
+```{r fig.width=7, fig.height=4}
+gr_gghm <- ggheatmap(tcgaBLCA_tb,
+    colv = "sample",
+    rowv = genes,
+    hm_colors = 'RdBu',
+    hm_color_values = scales::rescale(c(-4,-2,-1,-0.5,-0.25,0,0.25,0.5,1,2,4,6)),
+    scale = TRUE,
+    center = TRUE,
+    show_dend_row = FALSE,
+    show_colnames = FALSE,
+    show_rownames = FALSE,
+    group_colors = c(`Ba/Sq` = "#fe4a49", LumNS = "#32837d", LumP = "#06d6a0", LumU = "#009fb7",
+                     `Stroma-rich` = "#f9c80e", `NE-like` = "#7d5ba6"),
+    colors_title = "Scaled expression (log2 UQ)")
+
+gr_gghm +
+  plot_layout(guides = 'collect')
+```
+Here, we can see that the heatmap is clustered in a semi-supervised manner (by
+`consensusClass`). It also enables `add_tracks`:
+
+## Adding tracks
+
+You can `add_tracks` for variables that were in the original table fed to `ggheatmap`.
+You can see what variables are available using `gghmData`:
+
+```{r}
+gghmData(gr_gghm) %>% colnames()
+```
+
+`observations` will always be your ID variable, which is a factor ordered in the
+same way as the heatmap, to ease making new plots that will be perfectly aligned.
+Here, we'll add some clinical tracks:
+
+```{r fig.width=7, fig.height=5.5}
+gr_gghm <- add_tracks(gr_gghm,
+           track_columns = c("stage", "node", "metastasis"),
+           track_colors = list(stage = 'Greys', node = 'Oranges', metastasis = 'Reds'),
+           track_prop = 0.2)
+gr_gghm +
+  plot_layout(guides = 'collect')
+```
+
+## Aligning new plots
+
+Here we'll make two different plots: one to align with the samples (columns) and
+another to align with the genes (rows). We can get the data from gghmData, which
+is a good idea to facilitate further plotting because it will ensure your 
+observations will be in the correct order. Then, here, we make a line-plot with
+the correlations of each sample to the centroid of the 6 consensus bladder cancer
+subtypes. Note the use of `theme_quant`, one of our suggested themes that look
+nice with `ggheatmap`s, and that we switch the y-axis to the right side to make
+the end-product look better (though everything will work without this):
+
+```{r fig.width=5, fig.height=3}
+tcgaBLCA_tb2 <- gghmData(gr_gghm)
+plt_corlines <- tcgaBLCA_tb2 %>%
+  ungroup() %>%
+  select(observations, LumP:NE.like) %>%
+  pivot_longer(cols = -observations, names_to = "subtype", values_to = "cor") %>%
+  ggplot(aes(observations, cor, color = subtype, group = subtype)) +
+  geom_line() +
+  scale_y_continuous(position = "right") +
+  scale_color_manual(values = c(`Ba.Sq` = "#fe4a49", LumNS = "#32837d", LumP = "#06d6a0", LumU = "#009fb7",
+                                `Stroma.rich` = "#f9c80e", `NE.like` = "#7d5ba6")) +
+  guides(color = FALSE) +
+  labs(y = "Correlation\n to centroid") +
+  theme_quant()
+plt_corlines
+```
+
+The second plot should align to the rows. We can't just use the `gghmData` because
+it doesn't contain the information to order our rows, but we can get this from 
+`gghm_rowLevels`. Here, we plot which signature each gene in our example data belongs
+to:
+
+```{r fig.width=3, fig.height=3.5}
+plt_row_annot <- tcgaBLCA_ex$gene_annot %>%
+  mutate(gene_symbol = factor(gene_symbol, levels = gghm_rowLevels(gr_gghm)),
+         group = 'signature') %>%
+  ggplot(aes(gene_symbol, group, fill = signature)) +
+  geom_tile() +
+  labs(y = "") +
+  coord_flip() +
+  theme_sparse2()
+plt_row_annot
+```
+
+Finally, we can use `align_to_hm` to add these plots to the original hm with all
+panels properly aligned. Note the use of `legend_action = 'collect'` in the final
+call, that will unite all the legends in a nice way:
+
+
+```{r fig.height=6.5, fig.width=8.5}
+gghm_complete <- gr_gghm %>%
+  align_to_hm(plt_corlines, newplt_size_prop = 0.3) %>%
+  align_to_hm(plt_row_annot, pos = "left", newplt_size_prop = 0.08, 
+              legend_action = "collect", tag_level = 'keep')
+gghm_complete
+```
+
+Note that you can still use the `patchwork` `&` to make global changes to all
+plots:
+
+```{r fig.height=6.5, fig.width=8}
+gghm_complete <- gghm_complete &
+  theme(legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8))
+gghm_complete
+```
+
+## Creating panels
+
+You can now make panels with your complete heatmap with `patchwork`, `cowplot` or
+other aligning packages. For example:
+
+```{r fig.width=4, fig.height=3}
+plt_subtype_count <- ggplot(sample_annot, aes(consensusClass, fill = consensusClass)) +
+  geom_bar() +
+  scale_fill_manual(values = c(`Ba/Sq` = "#fe4a49", LumNS = "#32837d", 
+                               LumP = "#06d6a0", LumU = "#009fb7",
+                                `Stroma-rich` = "#f9c80e", 
+                               `NE-like` = "#7d5ba6")) +
+  labs(y = 'Number of samples') +
+  guides(fill = FALSE) +
+  theme_quant() +
+  theme(axis.ticks.x = element_line(color = "black"),
+        axis.text.x = element_text(color = "black", angle = 45, hjust = 1, vjust = 1))
+
+plt_subtype_count
+```
+
+Then, we can just use standard `patchwork` to align the `ggheatmap` and our
+new plots (as they won't be aligned with the heatmap part of the plot, but with
+the entire plot):
+
+```{r fig.width = 12, fig.height=6.5}
+library(patchwork)
+new_col <- (plt_subtype_count + plot_spacer()) +
+  plot_layout(heights = c(0.3,0.7))
+
+(new_col | gghm_complete) +
+  plot_layout(widths = c(0.4,0.6))
+```
