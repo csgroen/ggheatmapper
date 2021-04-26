@@ -85,10 +85,10 @@
 <a href="#using-a-matrix-as-your-table" class="anchor"></a>Using a matrix as your table</h1>
 <p>The simplest, yet less powerful, way to use <code>ggheatmap</code> is with a matrix as-is. Here, we demonstrate with a subset of a gene expression matrix for bladder cancer samples:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</span>
 <span class="co">#&gt; ✓ ggplot2 3.3.3     ✓ purrr   0.3.4</span>
-<span class="co">#&gt; ✓ tibble  3.1.0     ✓ dplyr   1.0.5</span>
+<span class="co">#&gt; ✓ tibble  3.1.1     ✓ dplyr   1.0.5</span>
 <span class="co">#&gt; ✓ tidyr   1.1.3     ✓ stringr 1.4.0</span>
 <span class="co">#&gt; ✓ readr   1.4.0     ✓ forcats 0.5.1</span>
 <span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span>
@@ -112,7 +112,8 @@
           colors_title <span class="op">=</span> <span class="st">"Scaled expression (log2 UQ)"</span>,
           show_colnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">gghm</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-1-1.png" width="576"> This method still will support extending with <code>align_to_hm</code> but would not support <code>add_tracks</code>. You can still modify this by using <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code> and adding <code>theme</code>, for example:</p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-1-1.png" width="576"></p>
+<p>This method still will support extending with <code>align_to_hm</code> but would not support <code>add_tracks</code>. You can still modify this by using <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code> and adding <code>theme</code>, for example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gghm</span> <span class="op">&amp;</span>
   <span class="fu">theme</span><span class="op">(</span>axis.text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -132,36 +133,659 @@
   <span class="fu">left_join</span><span class="op">(</span><span class="va">sample_annot</span>, by <span class="op">=</span> <span class="st">"sample"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">tibble</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">group_by</span><span class="op">(</span><span class="va">consensusClass</span><span class="op">)</span>
-<span class="va">tcgaBLCA_tb</span>
-<span class="co">#&gt; # A tibble: 100 x 79</span>
-<span class="co">#&gt; # Groups:   consensusClass [6]</span>
-<span class="co">#&gt;    sample        FBP1 ACER2  PKHD1 CAPN5 S100P TMEM51 DHRS2 CYP4F22 SPINK1 ACSL5</span>
-<span class="co">#&gt;    &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 TCGA-XF-A9S…  3.05 0.760 1.03    3.19  7.25   4.70 3.55   0.0458  8.07   5.22</span>
-<span class="co">#&gt;  2 TCGA-BL-A13…  2.54 4.44  0.250   2.98  4.28   2.69 8.25   1.73    3.90   4.77</span>
-<span class="co">#&gt;  3 TCGA-C4-A0F…  1.53 2.04  3.09    2.47  4.09   3.34 4.32   0.226   1.80   1.61</span>
-<span class="co">#&gt;  4 TCGA-BT-A20…  5.98 5.05  1.22    4.92  7.03   4.97 8.03   5.10    8.85   6.83</span>
-<span class="co">#&gt;  5 TCGA-GV-A40…  6.03 3.95  2.84    7.06  6.68   5.81 4.73   5.15    9.80   3.99</span>
-<span class="co">#&gt;  6 TCGA-HQ-A2O…  5.56 5.36  3.59    5.41  7.05   5.54 6.58   1.12    7.46   6.39</span>
-<span class="co">#&gt;  7 TCGA-XF-A8H…  8.32 5.76  3.46    6.90  8.26   5.50 9.91   7.05   11.2    6.65</span>
-<span class="co">#&gt;  8 TCGA-DK-A2I…  7.42 4.78  1.18    5.45  7.82   4.89 8.41   5.38    8.42   7.50</span>
-<span class="co">#&gt;  9 TCGA-UY-A78…  6.32 1.55  0.0317  1.64  7.23   5.51 8.22   1.82    0.474  4.05</span>
-<span class="co">#&gt; 10 TCGA-BL-A13…  2.50 0.438 0.0181  3.88  1.16   4.88 0.696  0.451   0.204  5.02</span>
-<span class="co">#&gt; # … with 90 more rows, and 68 more variables: ST3GAL5 &lt;dbl&gt;, TBX3 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   HPGD &lt;dbl&gt;, TGFBR3 &lt;dbl&gt;, FAM3B &lt;dbl&gt;, ATP8B1 &lt;dbl&gt;, RNF128 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   SNCG &lt;dbl&gt;, SLC44A3 &lt;dbl&gt;, GATA3 &lt;dbl&gt;, PPARG &lt;dbl&gt;, ICA1 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   GGT6 &lt;dbl&gt;, RAB11A &lt;dbl&gt;, TRAK1 &lt;dbl&gt;, VSIG2 &lt;dbl&gt;, BCAS1 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   RAB15 &lt;dbl&gt;, FAM174B &lt;dbl&gt;, SLC29A3 &lt;dbl&gt;, FOXA1 &lt;dbl&gt;, GOLT1A &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   PPFIBP2 &lt;dbl&gt;, DENND2D &lt;dbl&gt;, ACAA1 &lt;dbl&gt;, DNAJA4 &lt;dbl&gt;, HMGCS2 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   CYP2J2 &lt;dbl&gt;, VSNL1 &lt;dbl&gt;, KRT14 &lt;dbl&gt;, TGM1 &lt;dbl&gt;, SERPINB4 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   GSDMC &lt;dbl&gt;, KRT6A &lt;dbl&gt;, LGALS7 &lt;dbl&gt;, SFN &lt;dbl&gt;, SPRR2A &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   C12orf54 &lt;dbl&gt;, SPRR2D &lt;dbl&gt;, HOXD11 &lt;dbl&gt;, KRT6C &lt;dbl&gt;, KRT5 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   DSG3 &lt;dbl&gt;, KRT6B &lt;dbl&gt;, HOXD10 &lt;dbl&gt;, IL20RB &lt;dbl&gt;, RHCG &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   AHNAK2 &lt;dbl&gt;, SPRR2F &lt;dbl&gt;, FGFBP1 &lt;dbl&gt;, sex &lt;chr&gt;, age &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   stage &lt;chr&gt;, node &lt;chr&gt;, metastasis &lt;chr&gt;, papillary &lt;chr&gt;, squamous &lt;chr&gt;,</span>
-<span class="co">#&gt; #   neuroendocrine &lt;chr&gt;, plasmacytoid &lt;chr&gt;, consensusClass &lt;fct&gt;,</span>
-<span class="co">#&gt; #   cor_pval &lt;dbl&gt;, separationLevel &lt;dbl&gt;, LumP &lt;dbl&gt;, LumNS &lt;dbl&gt;, LumU &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   Stroma.rich &lt;dbl&gt;, Ba.Sq &lt;dbl&gt;, NE.like &lt;dbl&gt;</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="2%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="0%">
+<col width="0%">
+<col width="0%">
+<col width="0%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="2%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">sample</th>
+<th align="right">FBP1</th>
+<th align="right">ACER2</th>
+<th align="right">PKHD1</th>
+<th align="right">CAPN5</th>
+<th align="right">S100P</th>
+<th align="right">TMEM51</th>
+<th align="right">DHRS2</th>
+<th align="right">CYP4F22</th>
+<th align="right">SPINK1</th>
+<th align="right">ACSL5</th>
+<th align="right">ST3GAL5</th>
+<th align="right">TBX3</th>
+<th align="right">HPGD</th>
+<th align="right">TGFBR3</th>
+<th align="right">FAM3B</th>
+<th align="right">ATP8B1</th>
+<th align="right">RNF128</th>
+<th align="right">SNCG</th>
+<th align="right">SLC44A3</th>
+<th align="right">GATA3</th>
+<th align="right">PPARG</th>
+<th align="right">ICA1</th>
+<th align="right">GGT6</th>
+<th align="right">RAB11A</th>
+<th align="right">TRAK1</th>
+<th align="right">VSIG2</th>
+<th align="right">BCAS1</th>
+<th align="right">RAB15</th>
+<th align="right">FAM174B</th>
+<th align="right">SLC29A3</th>
+<th align="right">FOXA1</th>
+<th align="right">GOLT1A</th>
+<th align="right">PPFIBP2</th>
+<th align="right">DENND2D</th>
+<th align="right">ACAA1</th>
+<th align="right">DNAJA4</th>
+<th align="right">HMGCS2</th>
+<th align="right">CYP2J2</th>
+<th align="right">VSNL1</th>
+<th align="right">KRT14</th>
+<th align="right">TGM1</th>
+<th align="right">SERPINB4</th>
+<th align="right">GSDMC</th>
+<th align="right">KRT6A</th>
+<th align="right">LGALS7</th>
+<th align="right">SFN</th>
+<th align="right">SPRR2A</th>
+<th align="right">C12orf54</th>
+<th align="right">SPRR2D</th>
+<th align="right">HOXD11</th>
+<th align="right">KRT6C</th>
+<th align="right">KRT5</th>
+<th align="right">DSG3</th>
+<th align="right">KRT6B</th>
+<th align="right">HOXD10</th>
+<th align="right">IL20RB</th>
+<th align="right">RHCG</th>
+<th align="right">AHNAK2</th>
+<th align="right">SPRR2F</th>
+<th align="right">FGFBP1</th>
+<th align="left">sex</th>
+<th align="right">age</th>
+<th align="left">stage</th>
+<th align="left">node</th>
+<th align="left">metastasis</th>
+<th align="left">papillary</th>
+<th align="left">squamous</th>
+<th align="left">neuroendocrine</th>
+<th align="left">plasmacytoid</th>
+<th align="left">consensusClass</th>
+<th align="right">cor_pval</th>
+<th align="right">separationLevel</th>
+<th align="right">LumP</th>
+<th align="right">LumNS</th>
+<th align="right">LumU</th>
+<th align="right">Stroma.rich</th>
+<th align="right">Ba.Sq</th>
+<th align="right">NE.like</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">TCGA-XF-A9SW-01A</td>
+<td align="right">3.051428</td>
+<td align="right">0.7600492</td>
+<td align="right">1.0344884</td>
+<td align="right">3.190462</td>
+<td align="right">7.252360</td>
+<td align="right">4.695958</td>
+<td align="right">3.553598</td>
+<td align="right">0.0458037</td>
+<td align="right">8.070943</td>
+<td align="right">5.222600</td>
+<td align="right">2.7737241</td>
+<td align="right">4.846704</td>
+<td align="right">4.195551</td>
+<td align="right">5.317267</td>
+<td align="right">3.1750867</td>
+<td align="right">4.278225</td>
+<td align="right">3.175087</td>
+<td align="right">4.8426545</td>
+<td align="right">2.011588</td>
+<td align="right">5.840220</td>
+<td align="right">4.209453</td>
+<td align="right">2.770317</td>
+<td align="right">3.728798</td>
+<td align="right">5.853159</td>
+<td align="right">4.839407</td>
+<td align="right">3.2770249</td>
+<td align="right">0.9406215</td>
+<td align="right">4.783051</td>
+<td align="right">3.517479</td>
+<td align="right">3.205675</td>
+<td align="right">2.9853829</td>
+<td align="right">3.279423</td>
+<td align="right">2.467868</td>
+<td align="right">3.198088</td>
+<td align="right">3.772022</td>
+<td align="right">3.682428</td>
+<td align="right">0.3495844</td>
+<td align="right">0.718229</td>
+<td align="right">0.6896599</td>
+<td align="right">0.8271634</td>
+<td align="right">0.5215371</td>
+<td align="right">0.0230836</td>
+<td align="right">1.3219281</td>
+<td align="right">0.2937312</td>
+<td align="right">0.0000000</td>
+<td align="right">6.262246</td>
+<td align="right">1.2842084</td>
+<td align="right">0.3856537</td>
+<td align="right">0.2552571</td>
+<td align="right">0.1118929</td>
+<td align="right">0.0230836</td>
+<td align="right">1.853159</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0000000</td>
+<td align="right">0.3677318</td>
+<td align="right">0.5052353</td>
+<td align="right">1.8786937</td>
+<td align="right">5.6623525</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0901978</td>
+<td align="left">M</td>
+<td align="right">85</td>
+<td align="left">T3</td>
+<td align="left">N2</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">Stroma-rich</td>
+<td align="right">0</td>
+<td align="right">0.8871657</td>
+<td align="right">0.3931646</td>
+<td align="right">0.4925222</td>
+<td align="right">0.4609638</td>
+<td align="right">0.6421217</td>
+<td align="right">0.4954034</td>
+<td align="right">0.2989414</td>
+</tr>
+<tr class="even">
+<td align="left">TCGA-BL-A13J-01B</td>
+<td align="right">2.538652</td>
+<td align="right">4.4439186</td>
+<td align="right">0.2504068</td>
+<td align="right">2.982211</td>
+<td align="right">4.283709</td>
+<td align="right">2.692439</td>
+<td align="right">8.245226</td>
+<td align="right">1.7312968</td>
+<td align="right">3.901222</td>
+<td align="right">4.771899</td>
+<td align="right">3.2720427</td>
+<td align="right">5.745076</td>
+<td align="right">5.665011</td>
+<td align="right">4.000000</td>
+<td align="right">1.6374299</td>
+<td align="right">5.595922</td>
+<td align="right">5.496664</td>
+<td align="right">1.4043903</td>
+<td align="right">3.260282</td>
+<td align="right">5.052941</td>
+<td align="right">5.196140</td>
+<td align="right">3.543512</td>
+<td align="right">2.441317</td>
+<td align="right">5.449971</td>
+<td align="right">5.443269</td>
+<td align="right">3.0979633</td>
+<td align="right">1.8087013</td>
+<td align="right">3.592799</td>
+<td align="right">3.937369</td>
+<td align="right">1.390071</td>
+<td align="right">2.4585741</td>
+<td align="right">1.371969</td>
+<td align="right">3.780845</td>
+<td align="right">3.206136</td>
+<td align="right">3.224412</td>
+<td align="right">6.407171</td>
+<td align="right">2.1814040</td>
+<td align="right">2.950846</td>
+<td align="right">0.0554951</td>
+<td align="right">3.5974805</td>
+<td align="right">0.9714308</td>
+<td align="right">0.4360991</td>
+<td align="right">0.6614754</td>
+<td align="right">2.7732793</td>
+<td align="right">0.0000000</td>
+<td align="right">3.995869</td>
+<td align="right">1.0093987</td>
+<td align="right">0.0187366</td>
+<td align="right">0.7026141</td>
+<td align="right">0.5499671</td>
+<td align="right">0.0372329</td>
+<td align="right">4.684393</td>
+<td align="right">1.3756074</td>
+<td align="right">0.2264279</td>
+<td align="right">1.1477536</td>
+<td align="right">0.9952776</td>
+<td align="right">2.3462385</td>
+<td align="right">4.5877101</td>
+<td align="right">0.0093987</td>
+<td align="right">0.6909794</td>
+<td align="left">M</td>
+<td align="right">65</td>
+<td align="left">T4</td>
+<td align="left">N2</td>
+<td align="left">M0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">LumP</td>
+<td align="right">0</td>
+<td align="right">0.8960881</td>
+<td align="right">0.5418487</td>
+<td align="right">0.4977683</td>
+<td align="right">0.5031495</td>
+<td align="right">0.4995555</td>
+<td align="right">0.4950211</td>
+<td align="right">0.1822938</td>
+</tr>
+<tr class="odd">
+<td align="left">TCGA-C4-A0F1-01A</td>
+<td align="right">1.532221</td>
+<td align="right">2.0437214</td>
+<td align="right">3.0887679</td>
+<td align="right">2.473487</td>
+<td align="right">4.091374</td>
+<td align="right">3.335184</td>
+<td align="right">4.318595</td>
+<td align="right">0.2255597</td>
+<td align="right">1.804181</td>
+<td align="right">1.606989</td>
+<td align="right">0.8845228</td>
+<td align="right">2.225560</td>
+<td align="right">1.054448</td>
+<td align="right">1.599684</td>
+<td align="right">0.1475572</td>
+<td align="right">4.381709</td>
+<td align="right">3.059781</td>
+<td align="right">0.9888594</td>
+<td align="right">2.791413</td>
+<td align="right">4.214842</td>
+<td align="right">1.739183</td>
+<td align="right">2.461448</td>
+<td align="right">1.022026</td>
+<td align="right">6.647846</td>
+<td align="right">5.364572</td>
+<td align="right">0.1273793</td>
+<td align="right">0.2255597</td>
+<td align="right">1.562595</td>
+<td align="right">1.524527</td>
+<td align="right">2.191951</td>
+<td align="right">0.2630344</td>
+<td align="right">0.000000</td>
+<td align="right">2.592342</td>
+<td align="right">3.752419</td>
+<td align="right">4.852614</td>
+<td align="right">5.689729</td>
+<td align="right">0.0000000</td>
+<td align="right">2.566347</td>
+<td align="right">5.9933957</td>
+<td align="right">14.1342548</td>
+<td align="right">1.5700892</td>
+<td align="right">8.6758485</td>
+<td align="right">4.1235643</td>
+<td align="right">13.8688908</td>
+<td align="right">0.3526716</td>
+<td align="right">10.493024</td>
+<td align="right">4.8144715</td>
+<td align="right">0.5923420</td>
+<td align="right">5.0302002</td>
+<td align="right">3.5341382</td>
+<td align="right">10.4124884</td>
+<td align="right">13.898507</td>
+<td align="right">10.7761166</td>
+<td align="right">11.8531476</td>
+<td align="right">4.1056265</td>
+<td align="right">8.1470875</td>
+<td align="right">6.8639003</td>
+<td align="right">10.1725237</td>
+<td align="right">0.4533656</td>
+<td align="right">6.4604401</td>
+<td align="left">M</td>
+<td align="right">71</td>
+<td align="left">T3</td>
+<td align="left">N0</td>
+<td align="left">M0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">Ba/Sq</td>
+<td align="right">0</td>
+<td align="right">0.8163011</td>
+<td align="right">0.2997577</td>
+<td align="right">0.2315946</td>
+<td align="right">0.2387890</td>
+<td align="right">0.3410051</td>
+<td align="right">0.6597589</td>
+<td align="right">0.1615142</td>
+</tr>
+<tr class="even">
+<td align="left">TCGA-BT-A20W-01A</td>
+<td align="right">5.978460</td>
+<td align="right">5.0488941</td>
+<td align="right">1.2202661</td>
+<td align="right">4.915787</td>
+<td align="right">7.032628</td>
+<td align="right">4.972314</td>
+<td align="right">8.033026</td>
+<td align="right">5.0979235</td>
+<td align="right">8.851008</td>
+<td align="right">6.831062</td>
+<td align="right">5.1470213</td>
+<td align="right">7.443114</td>
+<td align="right">6.536437</td>
+<td align="right">4.238503</td>
+<td align="right">4.1879897</td>
+<td align="right">5.445847</td>
+<td align="right">5.888681</td>
+<td align="right">8.1717314</td>
+<td align="right">4.009266</td>
+<td align="right">7.773360</td>
+<td align="right">6.569229</td>
+<td align="right">4.644451</td>
+<td align="right">6.227231</td>
+<td align="right">6.769685</td>
+<td align="right">6.237912</td>
+<td align="right">5.8543865</td>
+<td align="right">5.1486993</td>
+<td align="right">5.892191</td>
+<td align="right">3.999070</td>
+<td align="right">4.605880</td>
+<td align="right">5.4792386</td>
+<td align="right">2.973734</td>
+<td align="right">5.580307</td>
+<td align="right">4.923159</td>
+<td align="right">5.437634</td>
+<td align="right">5.724268</td>
+<td align="right">6.6118234</td>
+<td align="right">2.794550</td>
+<td align="right">0.1280076</td>
+<td align="right">2.5370783</td>
+<td align="right">0.9314686</td>
+<td align="right">0.0000000</td>
+<td align="right">0.2949049</td>
+<td align="right">0.9157870</td>
+<td align="right">0.0000000</td>
+<td align="right">5.650089</td>
+<td align="right">0.0294438</td>
+<td align="right">0.1143327</td>
+<td align="right">0.1143327</td>
+<td align="right">0.5599585</td>
+<td align="right">0.0147970</td>
+<td align="right">2.134797</td>
+<td align="right">0.0725125</td>
+<td align="right">0.0865877</td>
+<td align="right">0.8009666</td>
+<td align="right">0.7399372</td>
+<td align="right">0.4335102</td>
+<td align="right">1.3009540</td>
+<td align="right">0.0000000</td>
+<td align="right">0.1814469</td>
+<td align="left">M</td>
+<td align="right">71</td>
+<td align="left">T2</td>
+<td align="left">N0</td>
+<td align="left">M0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">LumU</td>
+<td align="right">0</td>
+<td align="right">0.0257908</td>
+<td align="right">0.7403699</td>
+<td align="right">0.7359217</td>
+<td align="right">0.7420607</td>
+<td align="right">0.6170841</td>
+<td align="right">0.4691149</td>
+<td align="right">0.2982330</td>
+</tr>
+<tr class="odd">
+<td align="left">TCGA-GV-A40G-01A</td>
+<td align="right">6.027991</td>
+<td align="right">3.9534802</td>
+<td align="right">2.8433655</td>
+<td align="right">7.060945</td>
+<td align="right">6.679805</td>
+<td align="right">5.813682</td>
+<td align="right">4.730013</td>
+<td align="right">5.1503722</td>
+<td align="right">9.804690</td>
+<td align="right">3.986061</td>
+<td align="right">3.8487674</td>
+<td align="right">7.189749</td>
+<td align="right">6.635844</td>
+<td align="right">4.667193</td>
+<td align="right">4.3252536</td>
+<td align="right">5.299278</td>
+<td align="right">6.732415</td>
+<td align="right">8.4981895</td>
+<td align="right">3.684128</td>
+<td align="right">5.840269</td>
+<td align="right">5.940347</td>
+<td align="right">4.537487</td>
+<td align="right">5.706403</td>
+<td align="right">7.319151</td>
+<td align="right">6.190736</td>
+<td align="right">5.8231222</td>
+<td align="right">5.0257784</td>
+<td align="right">6.155207</td>
+<td align="right">4.876234</td>
+<td align="right">4.512908</td>
+<td align="right">4.8017954</td>
+<td align="right">2.762267</td>
+<td align="right">5.332157</td>
+<td align="right">4.636290</td>
+<td align="right">5.964363</td>
+<td align="right">5.688439</td>
+<td align="right">5.1330829</td>
+<td align="right">2.457413</td>
+<td align="right">0.1171835</td>
+<td align="right">2.3351842</td>
+<td align="right">1.6322682</td>
+<td align="right">0.3699496</td>
+<td align="right">0.2444187</td>
+<td align="right">0.2160369</td>
+<td align="right">0.0110552</td>
+<td align="right">6.640857</td>
+<td align="right">0.1674567</td>
+<td align="right">0.1475572</td>
+<td align="right">0.0756643</td>
+<td align="right">0.7458165</td>
+<td align="right">0.0220263</td>
+<td align="right">2.471488</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0756643</td>
+<td align="right">1.1968007</td>
+<td align="right">0.6849913</td>
+<td align="right">1.3996970</td>
+<td align="right">0.1968007</td>
+<td align="right">0.0000000</td>
+<td align="right">0.7785321</td>
+<td align="left">M</td>
+<td align="right">77</td>
+<td align="left">T2</td>
+<td align="left">N0</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">LumU</td>
+<td align="right">0</td>
+<td align="right">0.0748451</td>
+<td align="right">0.6734381</td>
+<td align="right">0.6157098</td>
+<td align="right">0.6832107</td>
+<td align="right">0.4895690</td>
+<td align="right">0.4171794</td>
+<td align="right">0.2647129</td>
+</tr>
+<tr class="even">
+<td align="left">TCGA-HQ-A2OE-01A</td>
+<td align="right">5.562190</td>
+<td align="right">5.3558523</td>
+<td align="right">3.5948780</td>
+<td align="right">5.413716</td>
+<td align="right">7.054534</td>
+<td align="right">5.541404</td>
+<td align="right">6.580083</td>
+<td align="right">1.1238717</td>
+<td align="right">7.464341</td>
+<td align="right">6.386977</td>
+<td align="right">5.2531547</td>
+<td align="right">9.160480</td>
+<td align="right">8.112341</td>
+<td align="right">5.058496</td>
+<td align="right">6.3492774</td>
+<td align="right">7.093522</td>
+<td align="right">5.697183</td>
+<td align="right">7.7692337</td>
+<td align="right">4.639871</td>
+<td align="right">7.434341</td>
+<td align="right">6.044997</td>
+<td align="right">3.523129</td>
+<td align="right">4.547161</td>
+<td align="right">7.047030</td>
+<td align="right">6.513904</td>
+<td align="right">4.4078684</td>
+<td align="right">5.1383513</td>
+<td align="right">6.474951</td>
+<td align="right">4.267174</td>
+<td align="right">4.653376</td>
+<td align="right">7.2894147</td>
+<td align="right">5.716423</td>
+<td align="right">6.040620</td>
+<td align="right">5.575813</td>
+<td align="right">5.173789</td>
+<td align="right">5.508778</td>
+<td align="right">9.2317177</td>
+<td align="right">7.126793</td>
+<td align="right">0.0099155</td>
+<td align="right">0.6842771</td>
+<td align="right">0.7449034</td>
+<td align="right">0.0774788</td>
+<td align="right">0.3436529</td>
+<td align="right">0.5682838</td>
+<td align="right">0.0000000</td>
+<td align="right">8.060994</td>
+<td align="right">0.0962153</td>
+<td align="right">0.2037952</td>
+<td align="right">0.9338331</td>
+<td align="right">0.0099155</td>
+<td align="right">0.0099155</td>
+<td align="right">4.418143</td>
+<td align="right">0.6529809</td>
+<td align="right">0.1599409</td>
+<td align="right">0.2630344</td>
+<td align="right">0.5548005</td>
+<td align="right">1.1820347</td>
+<td align="right">0.3975197</td>
+<td align="right">0.0000000</td>
+<td align="right">0.1329739</td>
+<td align="left">M</td>
+<td align="right">69</td>
+<td align="left">T2</td>
+<td align="left">N2</td>
+<td align="left">NA</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">LumP</td>
+<td align="right">0</td>
+<td align="right">0.3120613</td>
+<td align="right">0.6270255</td>
+<td align="right">0.5555841</td>
+<td align="right">0.5852272</td>
+<td align="right">0.4305816</td>
+<td align="right">0.4076061</td>
+<td align="right">0.2394613</td>
+</tr>
+</tbody>
+</table>
 <p>One of the additional features we unlock is using <code>grouping</code> with <code>group_by</code> to make semi-supervised heatmaps. In this case, we need to say which column contains the IDs that will be the <em>columns</em> of the heatmap (in this case, <code>colv = 'sample'</code>), and what are the columns we want to plot as <em>rows</em> (<code>rowv = genes</code>). Other parameters here are graphical, for demonstration:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gr_gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggheatmap.html">ggheatmap</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span>,
@@ -180,7 +804,8 @@
 
 <span class="va">gr_gghm</span> <span class="op">+</span>
   <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-4-1.png" width="672"> Here, we can see that the heatmap is clustered in a semi-supervised manner (by <code>consensusClass</code>). It also enables <code>add_tracks</code>:</p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<p>Here, we can see that the heatmap is clustered in a semi-supervised manner (by <code>consensusClass</code>). It also enables <code>add_tracks</code>:</p>
 <div id="adding-tracks" class="section level2">
 <h2 class="hasAnchor">
 <a href="#adding-tracks" class="anchor"></a>Adding tracks</h2>
@@ -216,7 +841,7 @@
 <span class="co">#&gt; Adding missing grouping variables: `consensusClass`</span>
 <span class="va">gr_gghm</span> <span class="op">+</span>
   <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-7-1.png" width="768"></p>
 </div>
 <div id="aligning-new-plots" class="section level2">
 <h2 class="hasAnchor">
@@ -237,7 +862,8 @@
   <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Correlation\n to centroid"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="../reference/theme_sparse.html">theme_quant</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">plt_corlines</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-7-1.png" width="480"> The second plot should align to the rows. We can’t just use the <code>gghmData</code> because it doesn’t contain the information to order our rows, but we can get this from <code>gghm_rowLevels</code>. Here, we plot which signature each gene in our example data belongs to:</p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-8-1.png" width="480"></p>
+<p>The second plot should align to the rows. We can’t just use the <code>gghmData</code> because it doesn’t contain the information to order our rows, but we can get this from <code>gghm_rowLevels</code>. Here, we plot which signature each gene in our example data belongs to:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plt_row_annot</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span> <span class="op">%&gt;%</span>
   <span class="fu">mutate</span><span class="op">(</span>gene_symbol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">gene_symbol</span>, levels <span class="op">=</span> <span class="fu"><a href="../reference/gghmData.html">gghm_rowLevels</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span><span class="op">)</span>,
@@ -248,7 +874,7 @@
   <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="../reference/theme_sparse.html">theme_sparse2</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">plt_row_annot</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-8-1.png" width="288"></p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-9-1.png" width="288"></p>
 <p>Finally, we can use <code>align_to_hm</code> to add these plots to the original hm with all panels properly aligned. Note the use of <code>legend_action = 'collect'</code> in the final call, that will unite all the legends in a nice way:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gghm_complete</span> <span class="op">&lt;-</span> <span class="va">gr_gghm</span> <span class="op">%&gt;%</span>
@@ -256,14 +882,14 @@
   <span class="fu"><a href="../reference/align_to_hm.html">align_to_hm</a></span><span class="op">(</span><span class="va">plt_row_annot</span>, pos <span class="op">=</span> <span class="st">"left"</span>, newplt_size_prop <span class="op">=</span> <span class="fl">0.08</span>, 
               legend_action <span class="op">=</span> <span class="st">"collect"</span>, tag_level <span class="op">=</span> <span class="st">'keep'</span><span class="op">)</span>
 <span class="va">gghm_complete</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-9-1.png" width="816"></p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-10-1.png" width="816"></p>
 <p>Note that you can still use the <code>patchwork</code> <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code> to make global changes to all plots:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gghm_complete</span> <span class="op">&lt;-</span> <span class="va">gghm_complete</span> <span class="op">&amp;</span>
   <span class="fu">theme</span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,
         legend.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span>
 <span class="va">gghm_complete</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-10-1.png" width="768"></p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-11-1.png" width="768"></p>
 </div>
 </div>
 <div id="creating-panels" class="section level1">
@@ -284,7 +910,7 @@
         axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span>, angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span>, vjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">plt_subtype_count</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-11-1.png" width="384"></p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-12-1.png" width="384"></p>
 <p>Then, we can just use standard <code>patchwork</code> to align the <code>ggheatmap</code> and our new plots (as they won’t be aligned with the heatmap part of the plot, but with the entire plot):</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>
@@ -293,7 +919,7 @@
 
 <span class="op">(</span><span class="va">new_col</span> <span class="op">|</span> <span class="va">gghm_complete</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.4</span>,<span class="fl">0.6</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="ggheatmap_files/figure-html/unnamed-chunk-12-1.png" width="1152"></p>
+<p><img src="ggheatmap_files/figure-html/unnamed-chunk-13-1.png" width="1152"></p>
 </div>
   </div>
 

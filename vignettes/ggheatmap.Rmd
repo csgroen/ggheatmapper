@@ -46,6 +46,7 @@ gghm <- ggheatmap(gexp,
           show_colnames = FALSE)
 gghm
 ```
+
 This method still will support extending with `align_to_hm` but would not support
 `add_tracks`. You can still modify this by using `&` and adding `theme`, for example:
 
@@ -59,7 +60,7 @@ gghm &
 If transpose our original table and extended it with new variables, we can unlock
 more features using `ggheatmap`. 
 
-```{r}
+```{r eval = FALSE}
 sample_annot <- tcgaBLCA_ex$sample_annot %>% as_tibble()
 genes <- rownames(gexp)
 tcgaBLCA_tb <- gexp %>%
@@ -69,8 +70,22 @@ tcgaBLCA_tb <- gexp %>%
   left_join(sample_annot, by = "sample") %>%
   tibble() %>%
   group_by(consensusClass)
-tcgaBLCA_tb
+head(tcgaBLCA_tb)
 ```
+
+```{r echo=FALSE}
+sample_annot <- tcgaBLCA_ex$sample_annot %>% as_tibble()
+genes <- rownames(gexp)
+tcgaBLCA_tb <- gexp %>%
+  t() %>%
+  as.data.frame() %>%
+  rownames_to_column("sample") %>%
+  left_join(sample_annot, by = "sample") %>%
+  tibble() %>%
+  group_by(consensusClass)
+knitr::kable(head(tcgaBLCA_tb))
+```
+
 One of the additional features we unlock is using `grouping` with `group_by` to
 make semi-supervised heatmaps. In this case, we need to say which column contains
 the IDs that will be the *columns* of the heatmap (in this case, `colv = 'sample'`),
@@ -95,6 +110,7 @@ gr_gghm <- ggheatmap(tcgaBLCA_tb,
 gr_gghm +
   plot_layout(guides = 'collect')
 ```
+
 Here, we can see that the heatmap is clustered in a semi-supervised manner (by
 `consensusClass`). It also enables `add_tracks`:
 
@@ -111,7 +127,7 @@ gghmData(gr_gghm) %>% colnames()
 same way as the heatmap, to ease making new plots that will be perfectly aligned.
 Here, we'll add some clinical tracks:
 
-```{r fig.width=7, fig.height=5.5}
+```{r fig.width=8, fig.height=5.5}
 gr_gghm <- add_tracks(gr_gghm,
            track_columns = c("stage", "node", "metastasis"),
            track_colors = list(stage = 'Greys', node = 'Oranges', metastasis = 'Reds'),
@@ -147,6 +163,7 @@ plt_corlines <- tcgaBLCA_tb2 %>%
   theme_quant()
 plt_corlines
 ```
+
 The second plot should align to the rows. We can't just use the `gghmData` because
 it doesn't contain the information to order our rows, but we can get this from 
 `gghm_rowLevels`. Here, we plot which signature each gene in our example data belongs
