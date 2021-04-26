@@ -10,7 +10,7 @@ align_to_hm(
   pos = "bottom",
   newplt_size_prop = 0.5,
   legend_action = NULL,
-  tag_level = "keep"
+  tag_level = "new"
 )
 }
 \arguments{
