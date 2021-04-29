@@ -42,7 +42,7 @@ add_tracks <- function(gghm,
 
     #-- Track plots
     track_plots <- lapply(track_columns, .track_plot, ppdf, track_colors, col_cls,
-                          fontsize)
+                          fontsize, line_geom = gghm$gghm$line_geom)
 
     track_plt_ptch <- wrap_plots(track_plots, ncol = 1, tag_level = 'new') &
         guides(fill = guide_legend(ncol = leg_ncol))
@@ -66,7 +66,7 @@ add_tracks <- function(gghm,
 }
 
 #' @import tidyverse
-.track_plot <- function(tcol, ppdf, track_colors, col_cls, fontsize) {
+.track_plot <- function(tcol, ppdf, track_colors, col_cls, fontsize, line_geom) {
     #-- Plot
     tplot <- ppdf %>%
         pivot_longer(!! tcol) %>%
@@ -94,6 +94,7 @@ add_tracks <- function(gghm,
                 scale_fill_gradientn(colors = tpal)
         }
     }
+    tplot <- tplot + line_geom
     return(tplot)
 }
 

@@ -46,10 +46,14 @@ align_to_hm <- function(gghm, gplot,
 
     } else if (pos == "top") {
         params$heights <- params$heights * (1-newplt_size_prop)
-        params$heights <- c(newplt_size_prop, params$heights)
+        params$heights <- c(params$heights[1:2], newplt_size_prop,
+                            params$heights[3:length(params$heights)])
         #-- Make design
         new_col <- paste0(rep("#", length(params$widths)-1), LETTERS[length(plots)])
-        new_design <- paste0(new_col,'\n',design)
+        design_rows <- str_split(design, "\n")[[1]]
+        new_design <- paste(c(design_rows[1:2], new_col,
+                              design_rows[3:length(design_rows)]),
+                            collapse = '\n')
         #-- Re-assemble with new design
         new_gghm <- wrap_plots(plots, design = new_design,
                                widths = params$widths,
@@ -57,12 +61,13 @@ align_to_hm <- function(gghm, gplot,
         params$hm_row <- params$hm_row + 1
     } else if (pos == "left") {
         params$widths <- params$widths * (1-newplt_size_prop)
-        params$widths <- c(newplt_size_prop, params$widths)
+        params$widths <- c(params$widths[1], newplt_size_prop,
+                           params$widths[2:length(params$widths)])
         #-- Make design
-        design_rows <- unlist(str_split(design, '\\\n'))
-        design_rows[params$hm_row] <- paste0(LETTERS[length(plots)], design_rows[params$hm_row])
+        design_rows <- str_split(design, "\n")[[1]]
+        design_rows[params$hm_row] <- paste0("C", LETTERS[length(plots)], str_sub(design_rows[params$hm_row], 2))
         idx <- setdiff(1:length(design_rows), params$hm_row)
-        design_rows[idx] <- paste0("#", design_rows[idx])
+        design_rows[idx] <- paste0(str_sub(design_rows[idx],1,1), "#", str_sub(design_rows[idx],2))
         new_design <- paste(design_rows, collapse = "\n")
 
         params$hm_col <- params$hm_col + 1

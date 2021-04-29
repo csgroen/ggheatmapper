@@ -44,15 +44,15 @@ hclust_semisupervised <- function(data, groups, dist_method = "euclidean",
              `canberra`, `binary`, `minkowski`, `pearson`, `spearman` or `kendall`.")
     }
 
-    #-- Use check
-    if(dist_method %in% c("pearson", "spearman", "kendall")) {
-        alluse <- c("everything", "all.obs", "complete.obs", "na.or.complete",
-                    "pairwise.complete.obs")
-        if(!(cor_use %in% alluse)) {
-            stop('`cor_use` must be one of "everything", "all.obs", "complete.obs",
-                 "na.or.complete", or "pairwise.complete.obs".')
-        }
-    }
+    # #-- Use check
+    # if(dist_method %in% c("pearson", "spearman", "kendall")) {
+    #     alluse <- c("everything", "all.obs", "complete.obs", "na.or.complete",
+    #                 "pairwise.complete.obs")
+    #     if(!(cor_use %in% alluse)) {
+    #         stop('`cor_use` must be one of "everything", "all.obs", "complete.obs",
+    #              "na.or.complete", or "pairwise.complete.obs".')
+    #     }
+    # }
 
     #-- Get groups with 1 member
     g_size <- sapply(groups, length)

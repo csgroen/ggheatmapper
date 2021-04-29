@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Clarice S. Groeneveld
 Maintainer: Clarice S. Groeneveld <clari.groeneveld@gmail.com>
 Description: Provides a framework for making complex multi-faceted heatmaps using ggplot2 and patchwork
-Imports: tidyverse, ggtree, rlist, patchwork
+Imports: tidyverse, magrittr, ggtree, rlist, patchwork
 Suggests: rmarkdown, usethis
 License: GPL-3
 Encoding: UTF-8

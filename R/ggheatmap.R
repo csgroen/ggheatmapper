@@ -68,7 +68,7 @@ globalVariables(c("pal_collection", "observations", "rows", "name", "value"))
 #' @return A ggplot object with class `ggheatmap`.
 #'
 #' @importFrom stats dist hclust cor as.dist
-#' @import tidyverse patchwork
+#' @import tidyverse patchwork magrittr
 #' @export
 ggheatmap <- function(table,
                       colv = NULL,
@@ -89,7 +89,7 @@ ggheatmap <- function(table,
                       fontsize = 11,
                       show_rownames = TRUE,
                       show_colnames = TRUE,
-                      show_dend_row = FALSE,
+                      show_dend_row = TRUE,
                       show_dend_col = TRUE,
                       dend_lwd = 0.3,
                       dend_prop_row = 0.1,
@@ -97,6 +97,10 @@ ggheatmap <- function(table,
                       group_track = TRUE,
                       group_prop = 0.1,
                       group_colors = NULL,
+                      group_lines = FALSE,
+                      group_line_color = "black",
+                      group_lty = "solid",
+                      group_lwd = 0.3,
                       group_leg_ncol = 3) {
 
     # Get variables if NULL
@@ -134,10 +138,16 @@ ggheatmap <- function(table,
                             show_rownames, show_colnames, hm_color_values, raster,
                             fontsize) +
         plot_layout(tag_level = 'new')
+    # Add lines
+    line_geom <- .line_geom(table, grouped, group_lines, group_line_color,
+                            group_lty, group_lwd)
+    gghm <- gghm + line_geom
     # Get track
     if(grouped & group_track) {
-        track_plot <- .plot_hm_track(table, pptable, group_colors, leg_ncol = group_leg_ncol) +
-            plot_layout(tag_level = 'new')
+        track_plot <- .plot_hm_track(table, pptable, group_colors, leg_ncol = group_leg_ncol,
+                                     fontsize) +
+            plot_layout(tag_level = 'new') +
+            line_geom
     } else {
         track_plot <- plot_spacer()
     }
@@ -145,7 +155,7 @@ ggheatmap <- function(table,
     # Add dendro
     full_hm <- .heatmap_panel(gghm, cluster_obs, show_dend_row, show_dend_col,
                               dend_prop_col, dend_prop_row, dend_lwd,
-                              track_plot, grouped, group_prop) %>%
+                              track_plot, grouped, group_prop, cluster_rows, cluster_cols) %>%
         suppressMessages()
 
     # Add data
@@ -155,7 +165,7 @@ ggheatmap <- function(table,
         mutate(observations = factor(observations, levels = levels(pptable$observations)))
     full_hm$gghm$row_levels <- levels(pptable$rows)
     full_hm$gghm$col_levels <- levels(full_hm$data$observations)
-
+    full_hm$gghm$line_geom <- line_geom
 
     return(full_hm)
 
@@ -168,7 +178,8 @@ ggheatmap <- function(table,
 .heatmap_panel <- function(gghm, cluster_obs,
                            show_dend_row, show_dend_col,
                            dend_prop_col, dend_prop_row,
-                           dend_lwd, track_plot, grouped, group_prop) {
+                           dend_lwd, track_plot, grouped, group_prop,
+                           cluster_rows, cluster_cols) {
     dend_row <- .plot_dendro(cluster_obs[["rows"]], type = "rows", dend_lwd) +
         labs(x = '') +
         plot_layout(tag_level = 'new') +
@@ -177,14 +188,14 @@ ggheatmap <- function(table,
         plot_layout(tag_level = 'keep')
     h2 <- ifelse(grouped, group_prop, 0)
 
-    if(show_dend_row & show_dend_col) {
+    if(show_dend_row & show_dend_col & cluster_rows & cluster_cols) {
         h1 <- dend_prop_col; h3 <- 1-h1-h2;
         w1 <- dend_prop_row; w2 <- 1-w1
         gghm <- gghm + scale_y_discrete(position = "right")
-    } else if (show_dend_row) {
+    } else if (show_dend_row & cluster_rows) {
         h1 <- 0; h3 <- 1-h2;
         w1 <- dend_prop_row; w2 <- 1-w1
-    } else if (show_dend_col) {
+    } else if (show_dend_col & cluster_cols) {
         h1 <- dend_prop_col; h3 <- 1-h1-h2
         w1 <- 0; w2 <- 1
     } else {
@@ -202,7 +213,8 @@ ggheatmap <- function(table,
 
     #-- Get parameters
     class(full_hm) <- append(class(full_hm), "ggheatmap")
-    full_hm$gghm <- list(plots = list(dend_col, track_plot, dend_row, gghm),
+    full_hm$gghm <- list(plots = list('dend_col' = dend_col, 'group_track' = track_plot,
+                                      'dend_row' = dend_row, 'hm' = gghm),
                          design = c("#A\n#B\nCD"))
     full_hm$gghm$params <- list(heights = c(h1,h2,h3),
                                 widths = c(w1,w2),
@@ -248,8 +260,22 @@ ggheatmap <- function(table,
             theme(axis.text.x = element_blank(),
                   axis.ticks.x = element_blank())
     }
+
     return(gghm)
 }
+.line_geom <- function(table, grouped, group_lines, group_line_color,
+           group_lty, group_lwd) {
+    grline_data <- table %>%
+        summarize(n = n()) %>%
+        mutate(gr_pos = cumsum(n) + 0.5) %>%
+        slice(-n())
+    line_geom <- geom_vline(aes(xintercept = gr_pos),
+                            lty = group_lty, color = group_line_color,
+                            size = group_lwd,
+                            data = grline_data)
+}
+
+
 #' @importFrom ggtree ggtree rotate
 #' @import tidyverse
 .plot_dendro <- function(cluster_obj, type = "cols", dend_lwd) {
@@ -272,7 +298,7 @@ ggheatmap <- function(table,
         theme(plot.margin = margin(0,0,0,0))
 }
 #' @import tidyverse
-.plot_hm_track <- function(table, pptable, group_colors, leg_ncol) {
+.plot_hm_track <- function(table, pptable, group_colors, leg_ncol, fontsize) {
     track_plot <- pptable %>%
         select(observations, group_var = group_vars(table)) %>%
         distinct() %>%
@@ -281,7 +307,7 @@ ggheatmap <- function(table,
         geom_raster() +
         labs(fill = group_vars(table)) +
         guides(fill = guide_legend(ncol = leg_ncol)) +
-        theme_void() +
+        theme_void(base_size = fontsize) +
         theme(plot.margin = margin(0,0,0,0))
 
     if(!is.null(group_colors)) {

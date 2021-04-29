@@ -24,7 +24,7 @@ ggheatmap(
   fontsize = 11,
   show_rownames = TRUE,
   show_colnames = TRUE,
-  show_dend_row = FALSE,
+  show_dend_row = TRUE,
   show_dend_col = TRUE,
   dend_lwd = 0.3,
   dend_prop_row = 0.1,
@@ -32,6 +32,10 @@ ggheatmap(
   group_track = TRUE,
   group_prop = 0.1,
   group_colors = NULL,
+  group_lines = FALSE,
+  group_line_color = "black",
+  group_lty = "solid",
+  group_lwd = 0.3,
   group_leg_ncol = 3
 )
 }

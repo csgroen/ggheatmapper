@@ -66,7 +66,7 @@
       <h1 data-toc-skip>ggheatmap: Tile-able heatmaps that play well with ggplots</h1>
                         <h4 class="author">Clarice S. Groeneveld</h4>
             
-            <h4 class="date">2021-04-26</h4>
+            <h4 class="date">2021-04-29</h4>
       
       
       <div class="hidden name"><code>ggheatmap.Rmd</code></div>
@@ -811,7 +811,7 @@
 <a href="#adding-tracks" class="anchor"></a>Adding tracks</h2>
 <p>You can <code>add_tracks</code> for variables that were in the original table fed to <code>ggheatmap</code>. You can see what variables are available using <code>gghmData</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/gghmData.html">gghmData</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/gghm_Data.html">gghmData</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "observations"    "FBP1"            "ACER2"           "PKHD1"          </span>
 <span class="co">#&gt;  [5] "CAPN5"           "S100P"           "TMEM51"          "DHRS2"          </span>
 <span class="co">#&gt;  [9] "CYP4F22"         "SPINK1"          "ACSL5"           "ST3GAL5"        </span>
@@ -848,7 +848,7 @@
 <a href="#aligning-new-plots" class="anchor"></a>Aligning new plots</h2>
 <p>Here we’ll make two different plots: one to align with the samples (columns) and another to align with the genes (rows). We can get the data from gghmData, which is a good idea to facilitate further plotting because it will ensure your observations will be in the correct order. Then, here, we make a line-plot with the correlations of each sample to the centroid of the 6 consensus bladder cancer subtypes. Note the use of <code>theme_quant</code>, one of our suggested themes that look nice with <code>ggheatmap</code>s, and that we switch the y-axis to the right side to make the end-product look better (though everything will work without this):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tcgaBLCA_tb2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gghmData.html">gghmData</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">tcgaBLCA_tb2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gghm_Data.html">gghmData</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span>
 <span class="va">plt_corlines</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_tb2</span> <span class="op">%&gt;%</span>
   <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">select</span><span class="op">(</span><span class="va">observations</span>, <span class="va">LumP</span><span class="op">:</span><span class="va">NE.like</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -866,7 +866,7 @@
 <p>The second plot should align to the rows. We can’t just use the <code>gghmData</code> because it doesn’t contain the information to order our rows, but we can get this from <code>gghm_rowLevels</code>. Here, we plot which signature each gene in our example data belongs to:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plt_row_annot</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>gene_symbol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">gene_symbol</span>, levels <span class="op">=</span> <span class="fu"><a href="../reference/gghmData.html">gghm_rowLevels</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu">mutate</span><span class="op">(</span>gene_symbol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">gene_symbol</span>, levels <span class="op">=</span> <span class="fu"><a href="../reference/gghm_Data.html">gghm_rowLevels</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span><span class="op">)</span>,
          group <span class="op">=</span> <span class="st">'signature'</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">gene_symbol</span>, <span class="va">group</span>, fill <span class="op">=</span> <span class="va">signature</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_tile</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
