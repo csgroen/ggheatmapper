@@ -36,7 +36,8 @@ ggheatmap(
   group_line_color = "black",
   group_lty = "solid",
   group_lwd = 0.3,
-  group_leg_ncol = 3
+  group_leg_ncol = 3,
+  row_facetting_space = 3
 )
 }
 \arguments{
@@ -57,8 +58,9 @@ rows of the heatmap). It is convenient, but less powerful.
 \item{colv}{Either NULL or the name of the column that contains the
 observation ID variable for the data.}
 
-\item{rowv}{Either NULL or the names of columns to be plotted into the rows
-of the heatmap.}
+\item{rowv}{Either NULL, a vector with names of columns to be plotted into the rows
+of the heatmap, or a named list of vectors for a faceted plot (\code{show_dend_row} will then
+be ignored).}
 
 \item{hm_colors}{Can be either:
 \itemize{

@@ -18,8 +18,9 @@ globalVariables(c("pal_collection", "observations", "rows", "name", "value"))
 #' rows of the heatmap). It is convenient, but less powerful.
 #' @param colv Either NULL or the name of the column that contains the
 #' observation ID variable for the data.
-#' @param rowv Either NULL or the names of columns to be plotted into the rows
-#' of the heatmap.
+#' @param rowv Either NULL, a vector with names of columns to be plotted into the rows
+#' of the heatmap, or a named list of vectors for a faceted plot (`show_dend_row` will then
+#' be ignored).
 #' @param hm_colors Can be either:
 #' * A valid palette used by `RColorBrewer`. See: [RColorBrewer::display.brewer.all()]
 #' * A vector of colors to be interpolated
@@ -101,7 +102,8 @@ ggheatmap <- function(table,
                       group_line_color = "black",
                       group_lty = "solid",
                       group_lwd = 0.3,
-                      group_leg_ncol = 3) {
+                      group_leg_ncol = 3,
+                      row_facetting_space = 3) {
 
     # Get variables if NULL
     if(is.null(colv)) {
@@ -109,6 +111,7 @@ ggheatmap <- function(table,
             as.data.frame() %>%
             rownames_to_column("observations")
         colv <- "observations"
+        show_dend_row = FALSE
     }
     if(is.null(rowv)) {
         rowv <- setdiff(colnames(table), colv)
@@ -116,19 +119,29 @@ ggheatmap <- function(table,
     # Check data
     .data_checks(table, colv, rowv)
 
+    # Handle lists
+    if(is.list(rowv)) {
+        row_list <- rowv
+        rowv <- unlist(rowv)
+        names(rowv) <- NULL
+    } else {
+        row_list <- NULL
+    }
+
     # Prepare data
     pptable <- .pp_data(table, colv, rowv, scale, center)
 
     # Raster warning
-    if(nrow(pptable) > 50000 & !raster) {
-        warning("Heatmap contains more than 50,000 tiles. Consider using `raster = TRUE` for a more manageable plot.")
+    if(nrow(pptable) > 10000 & !raster) {
+        warning("Heatmap contains more than 10,000 tiles. Consider using `raster = TRUE` for a more manageable plot.")
     }
 
     # Cluster
     grouped <- is_grouped_df(table)
-    cluster_res <- .cluster_data(table, pptable, grouped, colv,
-                                 cluster_cols, cluster_rows,
-                                 dist_method, clustering_method)
+    facetted <- !is.null(row_list)
+    cluster_res <- .cluster_data(table, pptable, grouped, colv, rowv,
+                                 cluster_cols, facetted, cluster_rows,
+                                 row_list, dist_method, clustering_method)
     pptable <- cluster_res$pptable
     cluster_obs <- cluster_res$cluster_obs
 
@@ -136,7 +149,7 @@ ggheatmap <- function(table,
     gghm <- .plot_ggheatmap(pptable, hm_colors, hm_color_breaks,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, hm_color_values, raster,
-                            fontsize) +
+                            fontsize, facetted, row_list, row_facetting_space) +
         plot_layout(tag_level = 'new')
     # Add lines
     line_geom <- .line_geom(table, grouped, group_lines, group_line_color,
@@ -144,8 +157,8 @@ ggheatmap <- function(table,
     gghm <- gghm + line_geom
     # Get track
     if(grouped & group_track) {
-        track_plot <- .plot_hm_track(table, pptable, group_colors, leg_ncol = group_leg_ncol,
-                                     fontsize) +
+        track_plot <- .plot_hm_track(table, pptable, group_colors, group_leg_ncol,
+                                     fontsize, show_rownames) +
             plot_layout(tag_level = 'new') +
             line_geom
     } else {
@@ -155,7 +168,8 @@ ggheatmap <- function(table,
     # Add dendro
     full_hm <- .heatmap_panel(gghm, cluster_obs, show_dend_row, show_dend_col,
                               dend_prop_col, dend_prop_row, dend_lwd,
-                              track_plot, grouped, group_prop, cluster_rows, cluster_cols) %>%
+                              track_plot, grouped, group_prop, cluster_rows, cluster_cols,
+                              show_rownames, facetted) %>%
         suppressMessages()
 
     # Add data
@@ -179,7 +193,8 @@ ggheatmap <- function(table,
                            show_dend_row, show_dend_col,
                            dend_prop_col, dend_prop_row,
                            dend_lwd, track_plot, grouped, group_prop,
-                           cluster_rows, cluster_cols) {
+                           cluster_rows, cluster_cols,
+                           show_rownames, facetted) {
     dend_row <- .plot_dendro(cluster_obs[["rows"]], type = "rows", dend_lwd) +
         labs(x = '') +
         plot_layout(tag_level = 'new') +
@@ -219,7 +234,8 @@ ggheatmap <- function(table,
     full_hm$gghm$params <- list(heights = c(h1,h2,h3),
                                 widths = c(w1,w2),
                                 hm_col = 2,
-                                hm_row = 3)
+                                hm_row = 3,
+                                show_rownames = show_rownames)
 
     return(full_hm)
 }
@@ -231,12 +247,28 @@ ggheatmap <- function(table,
 .plot_ggheatmap <- function(pptable, hm_colors, breaks,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, color_values, raster,
-                            fontsize) {
+                            fontsize, facetted, row_list, row_facetting_space) {
+    if(facetted) {
+        # row_table <- stack(row_list) %>% as_tibble() %>% rename(rows = values, rgroup = ind)
+        row_table <- tibble(rows = unlist(row_list),
+                            rgroup = factor(rep(names(row_list), sapply(row_list, length)),
+                                            levels = names(row_list)))
+        pptable <- left_join(pptable, row_table, by = 'rows')
+
+        if(show_rownames) {
+            gghm <- ggplot(pptable) + facet_grid(rows = 'rgroup', scales = 'free_y', space = 'free_y')
+        } else {
+            gghm <- ggplot(pptable) + facet_grid(rows = 'rgroup', scales = 'free_y', space = 'free_y', switch = "y")
+        }
+
+    } else {
+        gghm <- ggplot(pptable)
+    }
     if(raster) {
-        gghm <- ggplot(pptable) +
+        gghm <- gghm +
             geom_raster(aes(observations, rows, fill = value))
     } else {
-        gghm <- ggplot(pptable) +
+        gghm <- gghm +
             geom_tile(aes(observations, rows, fill = value))
     }
     if (length(hm_colors) == 1 & hm_colors[1] %in% .pal_collection) {
@@ -248,7 +280,7 @@ ggheatmap <- function(table,
     }
     gghm <- gghm +
         labs(x = column_title, y = rows_title, fill = colors_title) +
-        .theme_heatmap(base_size = fontsize)
+        .theme_heatmap(row_facetting_space, base_size = fontsize)
 
     if(!show_rownames) {
         gghm <- gghm +
@@ -298,17 +330,23 @@ ggheatmap <- function(table,
         theme(plot.margin = margin(0,0,0,0))
 }
 #' @import tidyverse
-.plot_hm_track <- function(table, pptable, group_colors, leg_ncol, fontsize) {
+.plot_hm_track <- function(table, pptable, group_colors, leg_ncol, fontsize,
+                           show_rownames) {
     track_plot <- pptable %>%
         select(observations, group_var = group_vars(table)) %>%
         distinct() %>%
-        mutate(group = 'A') %>%
+        mutate(group = group_vars(table)) %>%
         ggplot(aes(observations, group, fill = group_var)) +
         geom_raster() +
         labs(fill = group_vars(table)) +
         guides(fill = guide_legend(ncol = leg_ncol)) +
-        theme_void(base_size = fontsize) +
-        theme(plot.margin = margin(0,0,0,0))
+        .theme_track(fontsize)
+
+    if(show_rownames) {
+        track_plot <- track_plot + scale_y_discrete(expand = c(0,0))
+    } else {
+        track_plot <- track_plot + scale_y_discrete(expand = c(0,0), position = 'right')
+    }
 
     if(!is.null(group_colors)) {
         track_plot <- track_plot +
@@ -321,7 +359,8 @@ ggheatmap <- function(table,
 # Clustering
 #' @import tidyverse
 .cluster_data <- function(table, pptable, grouped, colv,
-                          cluster_cols, cluster_rows,
+                          rowv, cluster_cols, facetted,
+                          cluster_rows, row_list,
                           dist_method, clustering_method) {
     cluster_obs <- list(rows = NULL, cols = NULL)
     pp_mat <- .pp_mat(pptable)
@@ -354,16 +393,28 @@ ggheatmap <- function(table,
     }
     #------ Rows
     if (cluster_rows) {
-        if (class(cluster_rows) == "hclust") {
-            hcr <- cluster_rows
+        if(facetted) {
+            hcc_semi <- hclust_semisupervised(t(pp_mat), row_list,
+                                              dist_method = dist_method,
+                                              hclust_method = clustering_method,
+                                              cor_use = "pair")
+            pptable <- pptable %>%
+                mutate(rows = factor(rows, levels = rownames(hcc_semi$data)[hcc_semi$hclust$order])) %>%
+                arrange(rows)
+
+            cluster_obs[["rows"]] <- hcc_semi$hclust
         } else {
-            hcr <- .hclust_data(t(pp_mat), dist_method, clustering_method)
+            if (class(cluster_rows) == "hclust") {
+                hcr <- cluster_rows
+            } else {
+                hcr <- .hclust_data(t(pp_mat), dist_method, clustering_method)
+            }
+            pptable <- pptable %>%
+                mutate(rows = factor(rows, levels = colnames(pp_mat)[hcr$order]))
+            cluster_obs[["rows"]] <- hcr
         }
-        pptable <- pptable %>%
-            mutate(rows = factor(rows, levels = colnames(pp_mat)[hcr$order]))
-        cluster_obs[["rows"]] <- hcr
-    } else if (length(colv) > 1) {
-        pptable <- mutate(pptable, observations = factor(observations, levels = colv))
+    }  else {
+        pptable <- mutate(pptable, rows = factor(rows, levels = rowv))
     }
     return(list(pptable = pptable, cluster_obs = cluster_obs))
 }
@@ -436,14 +487,22 @@ ggheatmap <- function(table,
             stop('All items in `colv` must be unique.')
         }
     }
-    if(! all(rowv %in% colnames(table))) {
-        stop('All `rowv` must in columns in `table`.')
+    if (is.list(rowv)) {
+        if(! all(unlist(rowv) %in% colnames(table))) {
+            stop('All elements of `rowv` must in columns in `table`.')
+        }
+        if(is.null(names(rowv))) {
+            stop('If `rowv` is a list, elements must be a named')
+        }
+    } else if (! all(rowv %in% colnames(table))) {
+            stop('All `rowv` must in columns in `table`.')
     } else {
         num_check <- table[,rowv] %>% apply(2, is.numeric) %>% all()
         if(!num_check) {
             stop('All `rowv` must be numeric variables.')
         }
     }
+
     invisible(TRUE)
 }
 

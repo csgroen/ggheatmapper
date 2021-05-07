@@ -92,7 +92,7 @@ the IDs that will be the *columns* of the heatmap (in this case, `colv = 'sample
 and what are the columns we want to plot as *rows* (`rowv = genes`). Other
 parameters here are graphical, for demonstration:
 
-```{r fig.width=7, fig.height=4}
+```{r fig.width=7.5, fig.height=4}
 gr_gghm <- ggheatmap(tcgaBLCA_tb,
     colv = "sample",
     rowv = genes,
@@ -238,4 +238,30 @@ new_col <- (plt_subtype_count + plot_spacer()) +
   plot_layout(widths = c(0.4,0.6))
 ```
 
+# Row facetting
+
+As of ggheatmap 0.1.2, we've added row facetting options using the `rowv` parameter.
+ggheatmap will render parts of the heatmap in different facets if the `rowv`
+argument for the `ggheatmap` call is a named list:
+
+```{r fig.width=7.5, fig.height=4}
+sig_list <- split(tcgaBLCA_ex$gene_annot$gene_symbol, tcgaBLCA_ex$gene_annot$signature)
+
+gr_gghm <- ggheatmap(tcgaBLCA_tb,
+    colv = "sample",
+    rowv = sig_list,
+    hm_colors = 'RdBu',
+    hm_color_values = scales::rescale(c(-4,-2,-1,-0.5,-0.25,0,0.25,0.5,1,2,4,6)),
+    scale = TRUE,
+    center = TRUE,
+    show_dend_row = FALSE,
+    show_colnames = FALSE,
+    show_rownames = FALSE,
+    group_colors = c(`Ba/Sq` = "#fe4a49", LumNS = "#32837d", LumP = "#06d6a0", LumU = "#009fb7",
+                     `Stroma-rich` = "#f9c80e", `NE-like` = "#7d5ba6"),
+    colors_title = "Scaled expression (log2 UQ)")
+
+gr_gghm +
+  plot_layout(guides = 'collect')
+```
 

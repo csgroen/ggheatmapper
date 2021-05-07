@@ -42,7 +42,7 @@ add_tracks <- function(gghm,
 
     #-- Track plots
     track_plots <- lapply(track_columns, .track_plot, ppdf, track_colors, col_cls,
-                          fontsize, line_geom = gghm$gghm$line_geom)
+                          fontsize, line_geom = gghm$gghm$line_geom, gghm$gghm$params[["show_rownames"]])
 
     track_plt_ptch <- wrap_plots(track_plots, ncol = 1, tag_level = 'new') &
         guides(fill = guide_legend(ncol = leg_ncol))
@@ -66,15 +66,22 @@ add_tracks <- function(gghm,
 }
 
 #' @import tidyverse
-.track_plot <- function(tcol, ppdf, track_colors, col_cls, fontsize, line_geom) {
+.track_plot <- function(tcol, ppdf, track_colors, col_cls, fontsize, line_geom,
+                        show_rownames) {
     #-- Plot
     tplot <- ppdf %>%
         pivot_longer(!! tcol) %>%
         ggplot(aes(observations, name, fill = value)) +
             geom_tile() +
-        scale_y_discrete(expand = c(0,0), position = "right") +
         labs(fill = tcol) +
         .theme_track(fontsize)
+
+    if(show_rownames) {
+        tplot <- tplot + scale_y_discrete(expand = c(0,0))
+    } else {
+        tplot <- tplot + scale_y_discrete(expand = c(0,0), position = 'right')
+    }
+
     #-- Adjust color
     tpal <- track_colors[[tcol]]
     if (length(tpal) == 1) {
