@@ -30,6 +30,11 @@ ggheatmap(
   dend_prop_row = 0.1,
   dend_prop_col = 0.1,
   group_track = TRUE,
+  group_label = FALSE,
+  group_track_topslack = 0,
+  group_label_angle = 0,
+  group_label_size = 3.5,
+  group_label_position = "center",
   group_prop = 0.1,
   group_colors = NULL,
   group_lines = FALSE,
@@ -104,7 +109,7 @@ Ultimately passed to \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}} as 
 
 \item{show_rownames}{If TRUE, row names will be shown in the heatmap.}
 
-\item{show_colnames}{If TRUE, col names will be shown in the heatmap.}
+\item{show_colnames}{If TRUE, column names will be shown in the heatmap.}
 
 \item{show_dend_row}{If TRUE, the clustering dendrogram for the row variables
 will be shown to the left of the heatmap}
@@ -123,6 +128,19 @@ occupied by the dendrogram.}
 
 \item{group_track}{If \code{table} is a \code{grouped_tbl} and \code{group_track = TRUE},
 a track will be plot between the dendrogram and heatmap.}
+
+\item{group_label}{a logical indicating whether to label the groups directly.
+If TRUE, \code{show_dend_col} will be set to FALSE.}
+
+\item{group_track_topslack}{a numeric, indicating space to add at the top
+of the group track. Useful for fitting names}
+
+\item{group_label_angle}{an angle for the group labels}
+
+\item{group_label_size}{a numeric value to set the size of the group labels}
+
+\item{group_label_position}{one of: "left", "right" or "center", indicating
+where to write the group label if `group_label = TRUE}
 
 \item{group_prop}{The proportion of the height of the heatmap that will be
 used for the group track.}

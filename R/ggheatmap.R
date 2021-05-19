@@ -46,7 +46,7 @@ globalVariables(c("pal_collection", "observations", "rows", "name", "value"))
 #' @param fontsize Base fontsize for plot, which will be used by the theme.
 #' Ultimately passed to [ggplot2::theme_minimal()] as `base_size`.
 #' @param show_rownames If TRUE, row names will be shown in the heatmap.
-#' @param show_colnames If TRUE, col names will be shown in the heatmap.
+#' @param show_colnames If TRUE, column names will be shown in the heatmap.
 #' @param show_dend_row If TRUE, the clustering dendrogram for the row variables
 #' will be shown to the left of the heatmap
 #' @param show_dend_col If TRUE, the clustering dendrogram for the column variable
@@ -59,6 +59,14 @@ globalVariables(c("pal_collection", "observations", "rows", "name", "value"))
 #' occupied by the dendrogram.
 #' @param group_track If `table` is a `grouped_tbl` and `group_track = TRUE`,
 #' a track will be plot between the dendrogram and heatmap.
+#' @param group_label a logical indicating whether to label the groups directly.
+#' If TRUE, `show_dend_col` will be set to FALSE.
+#' @param group_track_topslack a numeric, indicating space to add at the top
+#' of the group track. Useful for fitting names
+#' @param group_label_angle an angle for the group labels
+#' @param group_label_size a numeric value to set the size of the group labels
+#' @param group_label_position one of: "left", "right" or "center", indicating
+#' where to write the group label if `group_label = TRUE
 #' @param group_prop The proportion of the height of the heatmap that will be
 #' used for the group track.
 #' @param group_colors A named vector with colors for each level in the grouping
@@ -96,6 +104,11 @@ ggheatmap <- function(table,
                       dend_prop_row = 0.1,
                       dend_prop_col = 0.1,
                       group_track = TRUE,
+                      group_label = FALSE,
+                      group_track_topslack = 0,
+                      group_label_angle = 0,
+                      group_label_size = 3.5,
+                      group_label_position = "center",
                       group_prop = 0.1,
                       group_colors = NULL,
                       group_lines = FALSE,
@@ -161,6 +174,12 @@ ggheatmap <- function(table,
                                      fontsize, show_rownames) +
             plot_layout(tag_level = 'new') +
             line_geom
+        if(group_label) {
+            track_plot <- .add_track_label(track_plot, group_track_topslack,
+                                           group_label_position,
+                                           group_label_size, group_label_angle)
+            show_dend_col = FALSE
+        }
     } else {
         track_plot <- plot_spacer()
     }
@@ -174,7 +193,7 @@ ggheatmap <- function(table,
 
     # Add data
     full_hm$data <- table %>%
-        rename(observations = !! colv) %>%
+        dplyr::rename(observations = {{colv}}) %>%
         filter(observations %in% unique(pptable$observations)) %>%
         mutate(observations = factor(observations, levels = levels(pptable$observations)))
     full_hm$gghm$row_levels <- levels(pptable$rows)
@@ -249,7 +268,7 @@ ggheatmap <- function(table,
                             show_rownames, show_colnames, color_values, raster,
                             fontsize, facetted, row_list, row_facetting_space) {
     if(facetted) {
-        # row_table <- stack(row_list) %>% as_tibble() %>% rename(rows = values, rgroup = ind)
+        # row_table <- stack(row_list) %>% as_tibble() %>% dplyr::rename(rows = values, rgroup = ind)
         row_table <- tibble(rows = unlist(row_list),
                             rgroup = factor(rep(names(row_list), sapply(row_list, length)),
                                             levels = names(row_list)))
@@ -300,7 +319,7 @@ ggheatmap <- function(table,
     grline_data <- table %>%
         summarize(n = n()) %>%
         mutate(gr_pos = cumsum(n) + 0.5) %>%
-        slice(-n())
+        dplyr::slice(-n())
     line_geom <- geom_vline(aes(xintercept = gr_pos),
                             lty = group_lty, color = group_line_color,
                             size = group_lwd,
@@ -447,7 +466,7 @@ ggheatmap <- function(table,
 #' @import tidyverse
 .pp_data <- function(table, colv, rowv, scale, center) {
     #-- Reshape if necessary
-    table <- rename(table, observations = !! colv)
+    table <- dplyr::rename(table, observations = {{colv}})
     if(!is.factor(table$observations)) {
         table <- mutate(table, observations = factor(observations))
     }
@@ -506,7 +525,28 @@ ggheatmap <- function(table,
     invisible(TRUE)
 }
 
+.add_track_label <- function(track_plot, group_track_topslack,
+                             group_label_position,
+                             group_label_size, group_label_angle) {
+    gr_annot <- track_plot$data %>%
+        group_by(group_var) %>%
+        summarize(n = n()) %>%
+        arrange(group_var) %>%
+        mutate(group_var = as.character(group_var),
+               xend = cumsum(n),
+               left = lag(xend, default = 0) + n*0.05,
+               center = lag(xend, default = 0) + n/2,
+               right = xend - n*0.05)
 
+    track_plot <- track_plot +
+        coord_cartesian(ylim = c(0.5,1.5+group_track_topslack), clip = 'off') +
+        annotate("text", y = 1, x = pull(gr_annot, {{group_label_position}}),
+                 label = gr_annot$group_var,
+                 hjust = 0, angle = group_label_angle, size = group_label_size) +
+        guides(fill = FALSE)
+
+    return(track_plot)
+}
 
 
 

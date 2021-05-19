@@ -5,6 +5,7 @@
 \alias{theme_sparse2}
 \alias{theme_quant}
 \alias{theme_scatter}
+\alias{theme_clean}
 \title{ggheatmap additional themes}
 \usage{
 theme_sparse(...)
@@ -14,6 +15,8 @@ theme_sparse2(...)
 theme_quant(...)
 
 theme_scatter(...)
+
+theme_clean(...)
 }
 \arguments{
 \item{...}{all arguments passed to \code{ggplot2::theme_minimal()}.}
@@ -27,5 +30,6 @@ are all built on top of \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}}.
 with columns of \code{ggheatmap}s. \code{theme_sparse2()} is designed for plots that will
 align to rows of the \code{ggheatmap}. \code{theme_quant()} adds horizontal lines to
 \code{theme_sparse()} and can be a useful upgrade for displaying numeric values in
-the y-axis. \code{theme_scatter()} is a all-purpose theme for building ggplots.
+the y-axis. \code{theme_scatter()} and \code{theme_clean()} are all-purpose theme for
+building ggplots.
 }

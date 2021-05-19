@@ -7,7 +7,8 @@
 #' with columns of `ggheatmap`s. `theme_sparse2()` is designed for plots that will
 #' align to rows of the `ggheatmap`. `theme_quant()` adds horizontal lines to
 #' `theme_sparse()` and can be a useful upgrade for displaying numeric values in
-#' the y-axis. `theme_scatter()` is a all-purpose theme for building ggplots.
+#' the y-axis. `theme_scatter()` and `theme_clean()` are all-purpose theme for
+#' building ggplots.
 #'
 #' @param ... all arguments passed to `ggplot2::theme_minimal()`.
 #' @import tidyverse
@@ -60,14 +61,16 @@ theme_quant <- function(...) {
 
 }
 #' @import tidyverse
-.theme_heatmap <- function(pspace, ...) {
-    theme_minimal(...) +
+.theme_heatmap <- function(pspace, base_size, ...) {
+    theme_minimal(base_size, ...) +
         theme(panel.grid = element_blank(),
               axis.ticks = element_line(color = "black"),
               axis.text = element_text(color = "black"),
-              axis.text.x = element_text(angle = 90, vjust = 0.5),
+              axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
               plot.margin = margin(0,0,0,0),
-              panel.spacing = unit(pspace, "pt"))
+              panel.spacing = unit(pspace, "pt"),
+              legend.title = element_text(size = base_size),
+              legend.text = element_text(size = base_size-1))
 }
 
 #' @export
@@ -81,6 +84,19 @@ theme_scatter <- function(...) {
               strip.background = element_rect(fill = "transparent", color = "black"),
               strip.text = element_text(color = "black"))
 }
+#' @export
+#' @rdname theme_sparse
+#' @import tidyverse
+theme_clean <- function(...) {
+    theme_light(...) +
+        theme(panel.border = element_rect(color = "black"),
+              panel.grid = element_blank(),
+              axis.ticks = element_line(color = "black"),
+              axis.text = element_text(color = "black"),
+              strip.background = element_rect(fill = "transparent", color = "black"),
+              strip.text = element_text(color = "black"))
+}
+
 
 #' @export
 .pal_collection <- c("Accent", "Dark2", "Paired", "Pastel1", "Pastel2", "Set1",

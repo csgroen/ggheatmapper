@@ -74,7 +74,7 @@ constructing panels." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggheatmap</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
       </span>
     </div>
 
@@ -145,6 +145,11 @@ constructing panels.</p>
   dend_prop_row <span class='op'>=</span> <span class='fl'>0.1</span>,
   dend_prop_col <span class='op'>=</span> <span class='fl'>0.1</span>,
   group_track <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  group_label <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  group_track_topslack <span class='op'>=</span> <span class='fl'>0</span>,
+  group_label_angle <span class='op'>=</span> <span class='fl'>0</span>,
+  group_label_size <span class='op'>=</span> <span class='fl'>3.5</span>,
+  group_label_position <span class='op'>=</span> <span class='st'>"center"</span>,
   group_prop <span class='op'>=</span> <span class='fl'>0.1</span>,
   group_colors <span class='op'>=</span> <span class='cn'>NULL</span>,
   group_lines <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -257,7 +262,7 @@ Ultimately passed to <code><a href='https://ggplot2.tidyverse.org/reference/ggth
     </tr>
     <tr>
       <th>show_colnames</th>
-      <td><p>If TRUE, col names will be shown in the heatmap.</p></td>
+      <td><p>If TRUE, column names will be shown in the heatmap.</p></td>
     </tr>
     <tr>
       <th>show_dend_row</th>
@@ -288,6 +293,29 @@ occupied by the dendrogram.</p></td>
       <th>group_track</th>
       <td><p>If <code>table</code> is a <code>grouped_tbl</code> and <code>group_track = TRUE</code>,
 a track will be plot between the dendrogram and heatmap.</p></td>
+    </tr>
+    <tr>
+      <th>group_label</th>
+      <td><p>a logical indicating whether to label the groups directly.
+If TRUE, <code>show_dend_col</code> will be set to FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>group_track_topslack</th>
+      <td><p>a numeric, indicating space to add at the top
+of the group track. Useful for fitting names</p></td>
+    </tr>
+    <tr>
+      <th>group_label_angle</th>
+      <td><p>an angle for the group labels</p></td>
+    </tr>
+    <tr>
+      <th>group_label_size</th>
+      <td><p>a numeric value to set the size of the group labels</p></td>
+    </tr>
+    <tr>
+      <th>group_label_position</th>
+      <td><p>one of: "left", "right" or "center", indicating
+where to write the group label if `group_label = TRUE</p></td>
     </tr>
     <tr>
       <th>group_prop</th>
