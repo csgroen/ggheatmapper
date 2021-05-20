@@ -11,7 +11,8 @@
 #' building ggplots.
 #'
 #' @param ... all arguments passed to `ggplot2::theme_minimal()`.
-#' @import tidyverse
+#' @importFrom ggplot2 theme_minimal theme element_blank element_line element_text
+#' margin
 #' @export
 theme_sparse <- function(...) {
     theme_minimal(...) +
@@ -25,6 +26,7 @@ theme_sparse <- function(...) {
 }
 #' @export
 #' @rdname theme_sparse
+#' @importFrom ggplot2 theme_minimal theme element_blank element_line element_text margin
 theme_sparse2 <- function(...) {
     theme_minimal(...) +
         theme(panel.grid = element_blank(),
@@ -38,6 +40,7 @@ theme_sparse2 <- function(...) {
 }
 #' @export
 #' @rdname theme_sparse
+#' @importFrom ggplot2 theme_minimal theme element_blank element_line element_text margin
 theme_quant <- function(...) {
     theme_minimal(...) +
         theme(panel.grid = element_blank(),
@@ -49,9 +52,9 @@ theme_quant <- function(...) {
               axis.text.y = element_text(color = "black"),
               plot.margin = margin(0,0,0,0))
 }
-#' @import tidyverse
-.theme_track <- function(fontsize = 11) {
-    tm <- theme_minimal(base_size = fontsize) +
+#' @importFrom ggplot2 theme_minimal theme element_blank element_line element_text margin
+.theme_track <- function(...) {
+    tm <- theme_minimal(...) +
         theme(panel.grid = element_blank(),
               axis.text.x = element_blank(),
               axis.title = element_blank(),
@@ -60,8 +63,9 @@ theme_quant <- function(...) {
               plot.margin = margin(0,0,0,0))
 
 }
-#' @import tidyverse
-.theme_heatmap <- function(pspace, base_size, ...) {
+#' @importFrom ggplot2 theme_minimal theme element_blank element_line
+#' element_text unit
+.theme_heatmap <- function(pspace, base_size,  ...) {
     theme_minimal(base_size, ...) +
         theme(panel.grid = element_blank(),
               axis.ticks = element_line(color = "black"),
@@ -75,7 +79,7 @@ theme_quant <- function(...) {
 
 #' @export
 #' @rdname theme_sparse
-#' @import tidyverse
+#' @importFrom ggplot2 theme_light theme element_blank element_line element_text
 theme_scatter <- function(...) {
     theme_light(...) +
         theme(panel.border = element_rect(color = "black"),
@@ -86,7 +90,7 @@ theme_scatter <- function(...) {
 }
 #' @export
 #' @rdname theme_sparse
-#' @import tidyverse
+#' @importFrom ggplot2 theme_light theme element_blank element_line element_text element_rect
 theme_clean <- function(...) {
     theme_light(...) +
         theme(panel.border = element_rect(color = "black"),

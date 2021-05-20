@@ -29,6 +29,9 @@ the new plot will occupy in the panel.}
 
 \item{legend_action}{A string specifying how guides should be treated in the layout.
 See: guides in \code{\link[patchwork:plot_layout]{patchwork::plot_layout()}}.}
+
+\item{tag_level}{A string ('keep' or 'new') to indicate how auto-tagging should behave.
+See \link[patchwork:plot_annotation]{patchwork::plot_annotation}.}
 }
 \value{
 A joined panel object of class \code{ggheatmap}.

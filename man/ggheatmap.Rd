@@ -42,7 +42,8 @@ ggheatmap(
   group_lty = "solid",
   group_lwd = 0.3,
   group_leg_ncol = 3,
-  row_facetting_space = 3
+  row_facetting_space = 3,
+  colorbar_dir = "vertical"
 )
 }
 \arguments{
@@ -98,11 +99,11 @@ correlation distance (\code{1-cor()}), with \code{dist_method} passed to method 
 heatmap tiles instead of \code{\link[ggplot2:geom_tile]{ggplot2::geom_tile()}}. Will be recommended by
 the function for large tables.}
 
-\item{rows_title}{Label for row variables.}
+\item{rows_title}{A title for row variables.}
 
-\item{column_title}{Label for the column variable.}
+\item{column_title}{A title for the column variable.}
 
-\item{colors_title}{Labels for the color legend.}
+\item{colors_title}{A title for the color legend.}
 
 \item{fontsize}{Base fontsize for plot, which will be used by the theme.
 Ultimately passed to \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}} as \code{base_size}.}
@@ -148,8 +149,22 @@ used for the group track.}
 \item{group_colors}{A named vector with colors for each level in the grouping
 variable. If NULL, automatic colors will be used.}
 
+\item{group_lines}{If TRUE, vertical lines will separate supervised clustering
+groups}
+
+\item{group_line_color}{Color of the vertical line}
+
+\item{group_lty}{Group line type. See \link[graphics:par]{graphics::par}}
+
+\item{group_lwd}{Group line width. See \link[graphics:par]{graphics::par}}
+
 \item{group_leg_ncol}{Number of columns in the groups legend. Passed to
 \code{\link[ggplot2:guide_legend]{ggplot2::guide_legend()}}.}
+
+\item{row_facetting_space}{space in pts between row facets, if they exist}
+
+\item{colorbar_dir}{Places the \code{colorbar} either horizontal or vertically. See:
+\link[ggplot2:guide_colourbar]{ggplot2::guide_colorbar}}
 }
 \value{
 A ggplot object with class \code{ggheatmap}.

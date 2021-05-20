@@ -1,4 +1,6 @@
-globalVariables(c("pal_collection", "observations", "rows", "name", "value"))
+globalVariables(c(".pal_collection", "observations", "rows", "name", "value",
+                  ".discrete_pals", ".continuous_pals", "gr_pos", "n", "group",
+                  "group_var", "nas", "xend"))
 #' Plots a ggplot heatmap
 #'
 #' `ggheatmap()` is the main function of the `ggheatmap` package. It constructs
@@ -40,9 +42,9 @@ globalVariables(c("pal_collection", "observations", "rows", "name", "value"))
 #' @param raster If TRUE, [ggplot2::geom_raster()] will be used for the
 #' heatmap tiles instead of [ggplot2::geom_tile()]. Will be recommended by
 #' the function for large tables.
-#' @param rows_title Label for row variables.
-#' @param column_title Label for the column variable.
-#' @param colors_title Labels for the color legend.
+#' @param rows_title A title for row variables.
+#' @param column_title A title for the column variable.
+#' @param colors_title A title for the color legend.
 #' @param fontsize Base fontsize for plot, which will be used by the theme.
 #' Ultimately passed to [ggplot2::theme_minimal()] as `base_size`.
 #' @param show_rownames If TRUE, row names will be shown in the heatmap.
@@ -71,13 +73,26 @@ globalVariables(c("pal_collection", "observations", "rows", "name", "value"))
 #' used for the group track.
 #' @param group_colors A named vector with colors for each level in the grouping
 #' variable. If NULL, automatic colors will be used.
+#' @param group_lines If TRUE, vertical lines will separate supervised clustering
+#' groups
+#' @param group_line_color Color of the vertical line
+#' @param group_lty Group line type. See [graphics::par]
+#' @param group_lwd Group line width. See [graphics::par]
 #' @param group_leg_ncol Number of columns in the groups legend. Passed to
 #' [ggplot2::guide_legend()].
+#' @param row_facetting_space space in pts between row facets, if they exist
+#' @param colorbar_dir Places the `colorbar` either horizontal or vertically. See:
+#' [ggplot2::guide_colorbar]
+#'
 #'
 #' @return A ggplot object with class `ggheatmap`.
 #'
 #' @importFrom stats dist hclust cor as.dist
-#' @import tidyverse patchwork magrittr
+#' @importFrom magrittr %>%
+#' @importFrom tibble rownames_to_column
+#' @importFrom dplyr is_grouped_df rename filter mutate
+#' @importFrom patchwork plot_layout
+#' @importFrom ggplot2 waiver
 #' @export
 ggheatmap <- function(table,
                       colv = NULL,
@@ -116,7 +131,8 @@ ggheatmap <- function(table,
                       group_lty = "solid",
                       group_lwd = 0.3,
                       group_leg_ncol = 3,
-                      row_facetting_space = 3) {
+                      row_facetting_space = 3,
+                      colorbar_dir = "vertical") {
 
     # Get variables if NULL
     if(is.null(colv)) {
@@ -162,7 +178,8 @@ ggheatmap <- function(table,
     gghm <- .plot_ggheatmap(pptable, hm_colors, hm_color_breaks,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, hm_color_values, raster,
-                            fontsize, facetted, row_list, row_facetting_space) +
+                            fontsize, facetted, row_list, row_facetting_space,
+                            colorbar_dir) +
         plot_layout(tag_level = 'new')
     # Add lines
     line_geom <- .line_geom(table, grouped, group_lines, group_line_color,
@@ -193,7 +210,7 @@ ggheatmap <- function(table,
 
     # Add data
     full_hm$data <- table %>%
-        dplyr::rename(observations = {{colv}}) %>%
+        rename(observations = {{colv}}) %>%
         filter(observations %in% unique(pptable$observations)) %>%
         mutate(observations = factor(observations, levels = levels(pptable$observations)))
     full_hm$gghm$row_levels <- levels(pptable$rows)
@@ -207,7 +224,8 @@ ggheatmap <- function(table,
 
 #-------------------------------------------------------------------------------
 # Patchwork
-#' @import tidyverse
+#' @importFrom ggplot2 labs theme
+#' @importFrom patchwork plot_layout plot_spacer wrap_plots
 .heatmap_panel <- function(gghm, cluster_obs,
                            show_dend_row, show_dend_col,
                            dend_prop_col, dend_prop_row,
@@ -262,11 +280,15 @@ ggheatmap <- function(table,
 
 #-------------------------------------------------------------------------------
 # Plots
-#' @import tidyverse
+#' @importFrom tibble tibble
+#' @importFrom dplyr left_join
+#' @importFrom ggplot2 ggplot aes facet_grid geom_raster geom_tile scale_fill_distiller
+#' scale_fill_gradientn guides guide_colorbar theme
 .plot_ggheatmap <- function(pptable, hm_colors, breaks,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, color_values, raster,
-                            fontsize, facetted, row_list, row_facetting_space) {
+                            fontsize, facetted, row_list, row_facetting_space,
+                            colorbar_dir) {
     if(facetted) {
         # row_table <- stack(row_list) %>% as_tibble() %>% dplyr::rename(rows = values, rgroup = ind)
         row_table <- tibble(rows = unlist(row_list),
@@ -299,7 +321,8 @@ ggheatmap <- function(table,
     }
     gghm <- gghm +
         labs(x = column_title, y = rows_title, fill = colors_title) +
-        .theme_heatmap(row_facetting_space, base_size = fontsize)
+        .theme_heatmap(row_facetting_space, base_size = fontsize) +
+        guides(fill = guide_colorbar(direction = colorbar_dir))
 
     if(!show_rownames) {
         gghm <- gghm +
@@ -314,21 +337,29 @@ ggheatmap <- function(table,
 
     return(gghm)
 }
+#' @importFrom magrittr %>%
+#' @importFrom ggplot2 geom_vline aes
+#' @importFrom dplyr summarize mutate slice n
 .line_geom <- function(table, grouped, group_lines, group_line_color,
            group_lty, group_lwd) {
     grline_data <- table %>%
         summarize(n = n()) %>%
         mutate(gr_pos = cumsum(n) + 0.5) %>%
         dplyr::slice(-n())
-    line_geom <- geom_vline(aes(xintercept = gr_pos),
-                            lty = group_lty, color = group_line_color,
-                            size = group_lwd,
-                            data = grline_data)
+    if(group_lines) {
+        line_geom <- geom_vline(aes(xintercept = gr_pos),
+                                lty = group_lty, color = group_line_color,
+                                size = group_lwd,
+                                data = grline_data)
+    } else {
+        line_geom <- NULL
+    }
+
 }
 
 
 #' @importFrom ggtree ggtree rotate
-#' @import tidyverse
+#' @importFrom ggplot2 coord_flip scale_x_reverse theme
 .plot_dendro <- function(cluster_obj, type = "cols", dend_lwd) {
     if(is.null(cluster_obj))
         return(plot_spacer())
@@ -348,7 +379,10 @@ ggheatmap <- function(table,
     dend_plot +
         theme(plot.margin = margin(0,0,0,0))
 }
-#' @import tidyverse
+#-- Add hm track
+#' @importFrom dplyr select distinct mutate
+#' @importFrom ggplot2 ggplot aes geom_raster labs guides guide_legend
+#' scale_y_discrete scale_fill_manual
 .plot_hm_track <- function(table, pptable, group_colors, leg_ncol, fontsize,
                            show_rownames) {
     track_plot <- pptable %>%
@@ -374,9 +408,38 @@ ggheatmap <- function(table,
     return(track_plot)
 }
 
+#-- Add track labels
+#' @importFrom magrittr %>%
+#' @importFrom dplyr group_by summarize arrange mutate lag pull n
+#' @importFrom ggplot2 coord_cartesian annotate guides
+.add_track_label <- function(track_plot, group_track_topslack,
+                             group_label_position,
+                             group_label_size, group_label_angle) {
+    gr_annot <- track_plot$data %>%
+        group_by(group_var) %>%
+        summarize(n = n()) %>%
+        arrange(group_var) %>%
+        mutate(group_var = as.character(group_var),
+               xend = cumsum(n),
+               left = lag(xend, default = 0) + n*0.05,
+               center = lag(xend, default = 0) + n/2,
+               right = xend - n*0.05)
+
+    track_plot <- track_plot +
+        coord_cartesian(ylim = c(0.5,1.5+group_track_topslack), clip = 'off') +
+        annotate("text", y = 1, x = pull(gr_annot, {{group_label_position}}),
+                 label = gr_annot$group_var,
+                 hjust = 0, angle = group_label_angle, size = group_label_size) +
+        guides(fill = FALSE)
+
+    return(track_plot)
+}
+
+
 #-------------------------------------------------------------------------------
 # Clustering
-#' @import tidyverse
+#' @importFrom dplyr group_vars select distinct mutate arrange
+#' @importFrom magrittr %>%
 .cluster_data <- function(table, pptable, grouped, colv,
                           rowv, cluster_cols, facetted,
                           cluster_rows, row_list,
@@ -438,6 +501,7 @@ ggheatmap <- function(table,
     return(list(pptable = pptable, cluster_obs = cluster_obs))
 }
 
+#' @importFrom stats as.dist dist hclust
 .hclust_data <- function(pp_mat, dist_method, clustering_method) {
     if(dist_method %in% c("pearson", "spearman", "kendall")) {
         d <- as.dist(1 - cor(t(pp_mat), method = dist_method, use = "pair"))
@@ -451,7 +515,10 @@ ggheatmap <- function(table,
 #-------------------------------------------------------------------------------
 # Data reshaping
 #-- Reshape data for hclust
-#' @import tidyverse
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select arrange
+#' @importFrom tidyr pivot_wider
+#' @importFrom tibble column_to_rownames
 .pp_mat <- function(pptable) {
     ppmat <- pptable %>%
         select(rows, observations, value) %>%
@@ -463,7 +530,10 @@ ggheatmap <- function(table,
 }
 
 #-- Melt data for geom_tile
-#' @import tidyverse
+#' @importFrom dplyr rename mutate group_by ungroup summarize filter pull
+#' @importFrom tidyr pivot_longer
+#' @importFrom magrittr %>%
+#' @importFrom forcats fct_drop
 .pp_data <- function(table, colv, rowv, scale, center) {
     #-- Reshape if necessary
     table <- dplyr::rename(table, observations = {{colv}})
@@ -497,7 +567,7 @@ ggheatmap <- function(table,
 }
 #-------------------------------------------------------------------------------
 # Checks
-#' @import tidyverse
+#' @importFrom magrittr %>%
 .data_checks <- function(table, colv, rowv) {
     if(! colv %in% colnames(table)) {
         stop('`colv` must be a column in `table`')
@@ -524,31 +594,3 @@ ggheatmap <- function(table,
 
     invisible(TRUE)
 }
-
-.add_track_label <- function(track_plot, group_track_topslack,
-                             group_label_position,
-                             group_label_size, group_label_angle) {
-    gr_annot <- track_plot$data %>%
-        group_by(group_var) %>%
-        summarize(n = n()) %>%
-        arrange(group_var) %>%
-        mutate(group_var = as.character(group_var),
-               xend = cumsum(n),
-               left = lag(xend, default = 0) + n*0.05,
-               center = lag(xend, default = 0) + n/2,
-               right = xend - n*0.05)
-
-    track_plot <- track_plot +
-        coord_cartesian(ylim = c(0.5,1.5+group_track_topslack), clip = 'off') +
-        annotate("text", y = 1, x = pull(gr_annot, {{group_label_position}}),
-                 label = gr_annot$group_var,
-                 hjust = 0, angle = group_label_angle, size = group_label_size) +
-        guides(fill = FALSE)
-
-    return(track_plot)
-}
-
-
-
-
-

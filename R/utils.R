@@ -55,6 +55,7 @@ gghm_getHMplot <- function(gghm) {
 
 #' @export
 #' @rdname gghm_getHMplot
+#' @importFrom patchwork wrap_plots
 gghm_updateHMplot <- function(gghm, new_hm) {
     if("ggheatmap" %in% class(gghm)) {
         gghm_info <- gghm$gghm
@@ -70,3 +71,14 @@ gghm_updateHMplot <- function(gghm, new_hm) {
     }
 
 }
+
+#' A list with data extracted from the TCGA-BLCA cohort of patients with
+#' muscle-invasive bladder cancer
+#'
+#' @format A list comprised of:
+#' 1. `gexp`: A matrix of gene expression of 60 genes for 100 patients
+#' 2. `sample_annot`: A data.frame with clinical and molecular annotations
+#' 3. `gene_annotation`: A data.frame with annotation for the 60 genes
+#'
+#' @source 10.1016/j.cell.2017.09.007
+"tcgaBLCA_ex"

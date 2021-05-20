@@ -22,7 +22,10 @@
 #' See: guides in [patchwork::plot_layout()].
 #'
 #' @export
-#' @import tidyverse patchwork
+#' @importFrom dplyr select
+#' @importFrom patchwork wrap_plots
+#' @importFrom ggplot2 guides guide_legend
+#' @importFrom magrittr %>%
 add_tracks <- function(gghm,
                        track_columns,
                        track_colors = list(),
@@ -32,13 +35,13 @@ add_tracks <- function(gghm,
                        track_pos = "bottom",
                        legend_action = "collect") {
     ppdf <- gghm$data %>%
-        select(observations, !!! track_columns)
+        select(observations, {{ track_columns }})
 
     #-- Identify column types
     col_cls <- sapply(ppdf, class)[-1]
 
     #-- Get colors
-    track_colors <- .get_trackColors(track_colors, track_columns)
+    track_colors <- .get_trackColors(track_colors, track_columns, col_cls)
 
     #-- Track plots
     track_plots <- lapply(track_columns, .track_plot, ppdf, track_colors, col_cls,
@@ -53,19 +56,81 @@ add_tracks <- function(gghm,
 
     return(annot_hm)
 }
+#' Add column tracks as a matrix to a `ggheatmap`
+#'
+#' add_matrix_track() is a shortcut for building a new panel of `ggplot2::geom_tile()`s
+#' with `track_columns` and adding it to the `ggheatmap` for a collection of
+#' numeric columns. It works if `track_columns` are included in `ggData(gghm)`.
+#'
+#' @param gghm An ggplot object of class `ggheatmap`.
+#' @param track_columns A vector with names of columns to be plotted.
+#' @param track_colors A named list where names are the same as `track_columns`.
+#' Can be either:
+#' * A valid palette used by `RColorBrewer`. See: [RColorBrewer::display.brewer.all()]
+#' * A named vector of colors passed to [ggplot2::scale_fill_manual()].
+#' @param colors_title A title for the color legend
+#' @param track_prop A number between 0 and 1, representing the height
+#' proportion between new tracks and the heatmap.
+#' @param fontsize Base fontsize for plot, which will be used by the theme.
+#' Ultimately passed to [ggplot2::theme_minimal()] as `base_size`.
+#' @param track_pos One of: 'bottom' or 'top'.
+#' @param legend_action A string specifying how guides should be treated in the layout.
+#' See: guides in [patchwork::plot_layout()].
+#' @param colorbar_dir one of "vertical" or "horizontal". See [ggplot2::guide_colorbar]
+#'
+#' @export
+#' @importFrom dplyr ungroup select
+#' @importFrom ggplot2 guides guide_colorbar
+#' @importFrom magrittr %>%
+add_matrix_track <- function(gghm,
+                       track_columns,
+                       track_colors = "Blues",
+                       colors_title = "value",
+                       track_prop = 0.3,
+                       fontsize = 11,
+                       track_pos = "bottom",
+                       legend_action = "collect",
+                       colorbar_dir = "vertical") {
+    #-- Get data
+    ppdf <- gghm$data %>%
+        ungroup() %>%
+        select(observations, {{ track_columns }})
+
+    #-- Get plot
+    mat_plt <- .matrix_track_plot(ppdf, track_colors, colors_title, fontsize) +
+        guides(fill = guide_colorbar(direction = colorbar_dir))
+
+    #-- Align
+    annot_hm <- align_to_hm(gghm, mat_plt, pos = track_pos,
+                            newplt_size_prop = track_prop,
+                            legend_action = legend_action)
+
+    return(annot_hm)
+
+}
+
 #-------------------------------------------------------------------------------
-.get_trackColors <- function(track_colors, track_columns) {
-    pal_counter <- 1
+.get_trackColors <- function(track_colors, track_columns, col_cls) {
+    pal_counterd <- 1
+    pal_counterc <- 1
     for(tcol in track_columns) {
         if(is.null(track_colors[[tcol]])) {
-            track_colors[[tcol]] <- pal_collection[pal_counter]
-            pal_counter <- pal_counter + 1
+            if (col_cls[tcol] %in% c("factor", "character", "Date")) {
+                track_colors[[tcol]] <- .discrete_pals[pal_counterd]
+                pal_counterd <- pal_counterd + 1
+            } else {
+                track_colors[[tcol]] <- .continuous_pals[pal_counterc]
+                pal_counterc <- pal_counterc + 1
+            }
         }
     }
     return(track_colors)
 }
 
-#' @import tidyverse
+#' @importFrom magrittr %>%
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot aes geom_tile labs scale_y_discrete scale_fill_brewer
+#' scale_fill_distiller
 .track_plot <- function(tcol, ppdf, track_colors, col_cls, fontsize, line_geom,
                         show_rownames) {
     #-- Plot
@@ -105,4 +170,33 @@ add_tracks <- function(gghm,
     return(tplot)
 }
 
-#-------------------------------------------------------------------------------
+#'@importFrom magrittr %>%
+#'@importFrom ggplot2 ggplot aes geom_tile labs scale_fill_distiller
+#'@importFrom tidyr pivot_longer
+.matrix_track_plot <- function(ppdf, track_colors, colors_title, fontsize) {
+    ppdf_melt <- ppdf %>%
+        pivot_longer(!observations)
+
+    plt <- ggplot(ppdf_melt, aes(observations, name, fill = value)) +
+        geom_tile() +
+        labs(fill = colors_title) +
+        .theme_track(base_size = fontsize)
+
+    if(track_colors %in% .continuous_pals) {
+        plt <- plt +
+            scale_fill_distiller(palette = track_colors, direction = 1)
+    } else {
+        plt <- plt +
+            scale_fill_gradientn(colors = track_colors)
+    }
+    return(plt)
+}
+
+.discrete_pals <- c("Accent", "Dark2", "Paired", "Pastel1", "Pastel2",
+                    "Set1", "Set2", "Set3")
+.continuous_pals <- c("BrBG", "PiYG", "PRGn", "PuOr", "RdBu", "RdGy",
+                      "RdYlBu", "RdYlGn", "Spectral", "Blues",
+                      "BuGn", "BuPu", "GnBu", "Greens", "Greys", "Oranges",
+                      "OrRd", "PuBu", "PuBuGn",
+                      "PuRd", "Purples", "RdPu", "Reds", "YlGn",
+                      "YlGnBu", "YlOrBr", "YlOrRd")

@@ -101,6 +101,7 @@ hclust_semisupervised <- function(data, groups, dist_method = "euclidean",
                 hclust = hc))
 }
 
+#' @importFrom stats as.hclust
 .merge_hclust <- function(hclist, height) {
     #-- Check
     if(!is.list(hclist)) {

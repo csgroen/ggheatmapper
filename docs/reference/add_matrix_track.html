@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • ggheatmap</title>
+<title>Add column tracks as a matrix to a ggheatmap — add_matrix_track • ggheatmap</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Add column tracks as a matrix to a ggheatmap — add_matrix_track" />
+<meta property="og:description" content="add_matrix_track() is a shortcut for building a new panel of ggplot2::geom_tile()s
+with track_columns and adding it to the ggheatmap for a collection of
+numeric columns. It works if track_columns are included in ggData(gghm)." />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -105,18 +108,83 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Add column tracks as a matrix to a <code>ggheatmap</code></h1>
+    
+    <div class="hidden name"><code>add_matrix_track.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="ggheatmap.html">ggheatmap: Tile-able heatmaps that play well with ggplots</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>add_matrix_track() is a shortcut for building a new panel of <code><a href='https://ggplot2.tidyverse.org/reference/geom_tile.html'>ggplot2::geom_tile()</a></code>s
+with <code>track_columns</code> and adding it to the <code>ggheatmap</code> for a collection of
+numeric columns. It works if <code>track_columns</code> are included in <code>ggData(gghm)</code>.</p>
     </div>
+
+    <pre class="usage"><span class='fu'>add_matrix_track</span><span class='op'>(</span>
+  <span class='va'>gghm</span>,
+  <span class='va'>track_columns</span>,
+  track_colors <span class='op'>=</span> <span class='st'>"Blues"</span>,
+  colors_title <span class='op'>=</span> <span class='st'>"value"</span>,
+  track_prop <span class='op'>=</span> <span class='fl'>0.3</span>,
+  fontsize <span class='op'>=</span> <span class='fl'>11</span>,
+  track_pos <span class='op'>=</span> <span class='st'>"bottom"</span>,
+  legend_action <span class='op'>=</span> <span class='st'>"collect"</span>,
+  colorbar_dir <span class='op'>=</span> <span class='st'>"vertical"</span>
+<span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>gghm</th>
+      <td><p>An ggplot object of class <code>ggheatmap</code>.</p></td>
+    </tr>
+    <tr>
+      <th>track_columns</th>
+      <td><p>A vector with names of columns to be plotted.</p></td>
+    </tr>
+    <tr>
+      <th>track_colors</th>
+      <td><p>A named list where names are the same as <code>track_columns</code>.
+Can be either:</p><ul>
+<li><p>A valid palette used by <code>RColorBrewer</code>. See: <code><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>RColorBrewer::display.brewer.all()</a></code></p></li>
+<li><p>A named vector of colors passed to <code><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>ggplot2::scale_fill_manual()</a></code>.</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>colors_title</th>
+      <td><p>A title for the color legend</p></td>
+    </tr>
+    <tr>
+      <th>track_prop</th>
+      <td><p>A number between 0 and 1, representing the height
+proportion between new tracks and the heatmap.</p></td>
+    </tr>
+    <tr>
+      <th>fontsize</th>
+      <td><p>Base fontsize for plot, which will be used by the theme.
+Ultimately passed to <code><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>ggplot2::theme_minimal()</a></code> as <code>base_size</code>.</p></td>
+    </tr>
+    <tr>
+      <th>track_pos</th>
+      <td><p>One of: 'bottom' or 'top'.</p></td>
+    </tr>
+    <tr>
+      <th>legend_action</th>
+      <td><p>A string specifying how guides should be treated in the layout.
+See: guides in <code><a href='https://patchwork.data-imaginist.com/reference/plot_layout.html'>patchwork::plot_layout()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>colorbar_dir</th>
+      <td><p>one of "vertical" or "horizontal". See <a href='https://ggplot2.tidyverse.org/reference/guide_colourbar.html'>ggplot2::guide_colorbar</a></p></td>
+    </tr>
+    </table>
+
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
