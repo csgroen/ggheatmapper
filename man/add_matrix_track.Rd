@@ -9,6 +9,7 @@ add_matrix_track(
   track_columns,
   track_colors = "Blues",
   colors_title = "value",
+  rows_title = NULL,
   track_prop = 0.3,
   fontsize = 11,
   track_pos = "bottom",
@@ -29,6 +30,8 @@ Can be either:
 }}
 
 \item{colors_title}{A title for the color legend}
+
+\item{rows_title}{A title for the variables in the rows}
 
 \item{track_prop}{A number between 0 and 1, representing the height
 proportion between new tracks and the heatmap.}

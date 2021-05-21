@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Semi-supervised hierarchical clustering — hclust_semisupervised • ggheatmap</title>
+<title>Annotate rows on gghm — annotate_gghm • ggheatmap</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Semi-supervised hierarchical clustering — hclust_semisupervised" />
-<meta property="og:description" content="Semi-supervised hierarchical clustering by chosen groups with hclust." />
+<meta property="og:title" content="Annotate rows on gghm — annotate_gghm" />
+<meta property="og:description" content="Adds row labels on the left or right side of the gghm. Especially useful
+when there are too many rowv, but you'd still like to highlight certain
+variables in the heatmap." />
 
 
 
@@ -106,70 +108,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Semi-supervised hierarchical clustering</h1>
+    <h1>Annotate rows on gghm</h1>
     
-    <div class="hidden name"><code>hclust_semisupervised.Rd</code></div>
+    <div class="hidden name"><code>annotate_gghm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Semi-supervised hierarchical clustering by chosen groups with hclust.</p>
+    <p>Adds row labels on the left or right side of the gghm. Especially useful
+when there are too many <code>rowv</code>, but you'd still like to highlight certain
+variables in the heatmap.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hclust_semisupervised</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  <span class='va'>groups</span>,
-  dist_method <span class='op'>=</span> <span class='st'>"euclidean"</span>,
-  dist_p <span class='op'>=</span> <span class='fl'>2</span>,
-  hclust_method <span class='op'>=</span> <span class='st'>"complete"</span>,
-  cor_use <span class='op'>=</span> <span class='st'>"everything"</span>,
-  merge_height <span class='op'>=</span> <span class='cn'>NA</span>
+    <pre class="usage"><span class='fu'>annotate_gghm</span><span class='op'>(</span>
+  <span class='va'>gghm</span>,
+  <span class='va'>annot_labels</span>,
+  side <span class='op'>=</span> <span class='st'>"left"</span>,
+  annot_size <span class='op'>=</span> <span class='fl'>2.5</span>,
+  add_margin <span class='op'>=</span> <span class='fl'>0</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>a data.frame to be clustered by rows</p></td>
+      <th>gghm</th>
+      <td><p>An ggplot object of class ggheatmap.</p></td>
     </tr>
     <tr>
-      <th>groups</th>
-      <td><p>a list of vectors. If we unlist(groups), all elements must be
-present in the rownames of data. Each vector in the list will be treated as
-a separate group for the hierarchical clustering, and rejoined in order at
-the end.</p></td>
+      <th>annot_labels</th>
+      <td><p>A vector of labels that you'd like to annotate. Must have
+been passed as <code>rowv</code> when creating the heatmap.</p></td>
     </tr>
     <tr>
-      <th>dist_method</th>
-      <td><p>a distance computation method. Must be one of "euclidean",
-"maximum", "manhattan", "canberra", "binary", "minkowski", "pearson", "spearman"</p></td>
+      <th>side</th>
+      <td><p>Either 'left' or 'right' of the heatmap</p></td>
     </tr>
     <tr>
-      <th>dist_p</th>
-      <td><p>the power of the Minkowski distance, if chosen dist_method is "minkowski"</p></td>
+      <th>annot_size</th>
+      <td><p>Size of annotation text</p></td>
     </tr>
     <tr>
-      <th>hclust_method</th>
-      <td><p>an agglomeration method. Should be a method supported by
-hclust, one of:  "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA),
-"mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).</p></td>
-    </tr>
-    <tr>
-      <th>cor_use</th>
-      <td><p>If using correlation as distance, chooses the method for computing
-covariances in the presence of missing values. See <a href='https://rdrr.io/r/stats/cor.html'>stats::cor</a>.</p></td>
-    </tr>
-    <tr>
-      <th>merge_height</th>
-      <td><p>If provided, dendrogramws will be merged at that height.</p></td>
+      <th>add_margin</th>
+      <td><p>Whether to add some margin to make extra space for the
+annotations if they're overlapping other elements. Margin unit is mm.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>hclust_semisupervised returns a list. The first element of the list
-is the data, reordered so that the merged hclust object will work. The second
-element is the result of the semi-supervised hierarchical clustering.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

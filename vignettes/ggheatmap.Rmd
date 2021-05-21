@@ -118,10 +118,10 @@ Here, we can see that the heatmap is clustered in a semi-supervised manner (by
 ## Adding tracks
 
 You can `add_tracks` for variables that were in the original table fed to `ggheatmap`.
-You can see what variables are available using `gghmData`:
+You can see what variables are available using `get_data`:
 
 ```{r}
-gghmData(gr_gghm) %>% colnames()
+get_data(gr_gghm) %>% colnames()
 ```
 
 `observations` will always be your ID variable, which is a factor ordered in the
@@ -140,7 +140,7 @@ gr_gghm +
 ## Aligning new plots
 
 Here we'll make two different plots: one to align with the samples (columns) and
-another to align with the genes (rows). We can get the data from gghmData, which
+another to align with the genes (rows). We can get the data from get_data, which
 is a good idea to facilitate further plotting because it will ensure your 
 observations will be in the correct order. Then, here, we make a line-plot with
 the correlations of each sample to the centroid of the 6 consensus bladder cancer
@@ -149,7 +149,7 @@ nice with `ggheatmap`s, and that we switch the y-axis to the right side to make
 the end-product look better (though everything will work without this):
 
 ```{r fig.width=5, fig.height=3}
-tcgaBLCA_tb2 <- gghmData(gr_gghm)
+tcgaBLCA_tb2 <- get_data(gr_gghm)
 plt_corlines <- tcgaBLCA_tb2 %>%
   ungroup() %>%
   select(observations, LumP:NE.like) %>%
@@ -165,14 +165,14 @@ plt_corlines <- tcgaBLCA_tb2 %>%
 plt_corlines
 ```
 
-The second plot should align to the rows. We can't just use the `gghmData` because
+The second plot should align to the rows. We can't just use the `get_data` because
 it doesn't contain the information to order our rows, but we can get this from 
-`gghm_rowLevels`. Here, we plot which signature each gene in our example data belongs
+`get_rowLevels`. Here, we plot which signature each gene in our example data belongs
 to:
 
 ```{r fig.width=3, fig.height=3.5}
 plt_row_annot <- tcgaBLCA_ex$gene_annot %>%
-  mutate(gene_symbol = factor(gene_symbol, levels = gghm_rowLevels(gr_gghm)),
+  mutate(gene_symbol = factor(gene_symbol, levels = get_rowLevels(gr_gghm)),
          group = 'signature') %>%
   ggplot(aes(gene_symbol, group, fill = signature)) +
   geom_tile() +

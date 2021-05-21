@@ -1,3 +1,66 @@
+#' Annotate rows on gghm
+#'
+#' Adds row labels on the left or right side of the gghm. Especially useful
+#' when there are too many `rowv`, but you'd still like to highlight certain
+#' variables in the heatmap.
+#'
+#' @param gghm An ggplot object of class ggheatmap.
+#' @param annot_labels A vector of labels that you'd like to annotate. Must have
+#' been passed as `rowv` when creating the heatmap.
+#' @param side Either 'left' or 'right' of the heatmap
+#' @param annot_size Size of annotation text
+#' @param add_margin Whether to add some margin to make extra space for the
+#' annotations if they're overlapping other elements. Margin unit is mm.
+#'
+#' @export
+#' @importFrom ggplot2 coord_cartesian theme margin
+#' @importFrom ggrepel geom_text_repel
+#' @importFrom tibble tibble
+#' @importFrom dplyr filter
+#' @importFrom magrittr %>%
+annotate_gghm <- function(gghm, annot_labels, side = "left",
+                          annot_size = 2.5, add_margin = 0) {
+    if(! "ggheatmap" %in% class(gghm)) {
+        stop("`gghm` must be of class `ggheatmap`.")
+    }
+    #-- Get heatmap
+    heatmap <- gghm$gghm$plots$hm
+    #-- Get annotation labels
+    data <- tibble(rows = annot_labels, labels = annot_labels) %>%
+        filter(rows %in% levels(heatmap$data$rows))
+
+
+    if(side == "left") {
+        hm <- heatmap +
+            coord_cartesian(clip = "off") +
+            geom_text_repel(data = data,
+                            aes(x = 0, y = rows, label = annot_labels),
+                            hjust = 0.5,
+                            na.rm = TRUE,
+                            xlim = c(-Inf, 0),
+                            size = annot_size,
+                            segment.color = "grey60",
+                            min.segment.length = 0.2) +
+            theme(plot.margin = margin(0,0,0,add_margin, unit = "mm"))
+    } else {
+        ncols <- heatmap$data$observations %>% nlevels()
+        hm <- heatmap +
+            coord_cartesian(clip = "off") +
+            geom_text_repel(data = data,
+                            aes(x = ncols, y = rows, label = annot_labels),
+                            hjust = 0.5,
+                            na.rm = TRUE,
+                            xlim = c(ncols+1, Inf),
+                            size = annot_size,
+                            segment.color = "grey60",
+                            min.segment.length = 0.2) +
+            theme(legend.margin = margin(0,0,0,add_margin, unit = "mm"))
+    }
+
+    new_gghm <- update_hmPlot(gghm, hm)
+    return(new_gghm)
+}
+
 #' ggheatmap additional themes
 #'
 #' These themes are provided as helpers to build panels with `ggheatmap`. They

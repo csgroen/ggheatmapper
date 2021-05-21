@@ -8,7 +8,7 @@
 #' @param gplot Another object of class ggplot, that shares either columns
 #' (if `pos='top'` or `pos='bottom'`) or rows (if `pos='left'`) with the heatmap.
 #' Note: to create the gplot, make sure you use [gghmData()] to get the data, or
-#' alternatively [gghm_rowLevels()] or [gghm_colLevels()].
+#' alternatively [get_rowLevels()] or [get_colLevels()].
 #' @param pos One of 'top', 'bottom' or 'left'.
 #' @param newplt_size_prop A float between 0 and 1, that indicates the proportion
 #' of the height (if `pos='top'` or `pos='bottom'`) or width (if `pos='left'`) that

@@ -12,7 +12,8 @@ add_tracks(
   leg_ncol = 3,
   fontsize = 11,
   track_pos = "bottom",
-  legend_action = "collect"
+  legend_action = "collect",
+  show_legend = TRUE
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ Ultimately passed to \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}} as 
 
 \item{legend_action}{A string specifying how guides should be treated in the layout.
 See: guides in \code{\link[patchwork:plot_layout]{patchwork::plot_layout()}}.}
+
+\item{If}{FALSE, no legend is added to the ggheatmap for the tracks}
 }
 \description{
 add_tracks() is a shortcut for building a new panel of \code{ggplot2::geom_tile()}s

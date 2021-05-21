@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Semi-supervised hierarchical clustering — hclust_semisupervised • ggheatmap</title>
+<title>Get data from ggheatmap — get_data • ggheatmap</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Semi-supervised hierarchical clustering — hclust_semisupervised" />
-<meta property="og:description" content="Semi-supervised hierarchical clustering by chosen groups with hclust." />
+<meta property="og:title" content="Get data from ggheatmap — get_data" />
+<meta property="og:description" content="These three functions help get data that may be useful for further plotting
+from the ggheatmap object." />
 
 
 
@@ -106,70 +107,40 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Semi-supervised hierarchical clustering</h1>
+    <h1>Get data from ggheatmap</h1>
     
-    <div class="hidden name"><code>hclust_semisupervised.Rd</code></div>
+    <div class="hidden name"><code>get_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Semi-supervised hierarchical clustering by chosen groups with hclust.</p>
+    <p>These three functions help get data that may be useful for further plotting
+from the ggheatmap object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hclust_semisupervised</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  <span class='va'>groups</span>,
-  dist_method <span class='op'>=</span> <span class='st'>"euclidean"</span>,
-  dist_p <span class='op'>=</span> <span class='fl'>2</span>,
-  hclust_method <span class='op'>=</span> <span class='st'>"complete"</span>,
-  cor_use <span class='op'>=</span> <span class='st'>"everything"</span>,
-  merge_height <span class='op'>=</span> <span class='cn'>NA</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_data</span><span class='op'>(</span><span class='va'>gghm</span><span class='op'>)</span>
+
+<span class='fu'>gghmData</span><span class='op'>(</span><span class='va'>gghm</span><span class='op'>)</span>
+
+<span class='fu'>get_rowLevels</span><span class='op'>(</span><span class='va'>gghm</span><span class='op'>)</span>
+
+<span class='fu'>get_colLevels</span><span class='op'>(</span><span class='va'>gghm</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>a data.frame to be clustered by rows</p></td>
-    </tr>
-    <tr>
-      <th>groups</th>
-      <td><p>a list of vectors. If we unlist(groups), all elements must be
-present in the rownames of data. Each vector in the list will be treated as
-a separate group for the hierarchical clustering, and rejoined in order at
-the end.</p></td>
-    </tr>
-    <tr>
-      <th>dist_method</th>
-      <td><p>a distance computation method. Must be one of "euclidean",
-"maximum", "manhattan", "canberra", "binary", "minkowski", "pearson", "spearman"</p></td>
-    </tr>
-    <tr>
-      <th>dist_p</th>
-      <td><p>the power of the Minkowski distance, if chosen dist_method is "minkowski"</p></td>
-    </tr>
-    <tr>
-      <th>hclust_method</th>
-      <td><p>an agglomeration method. Should be a method supported by
-hclust, one of:  "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA),
-"mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).</p></td>
-    </tr>
-    <tr>
-      <th>cor_use</th>
-      <td><p>If using correlation as distance, chooses the method for computing
-covariances in the presence of missing values. See <a href='https://rdrr.io/r/stats/cor.html'>stats::cor</a>.</p></td>
-    </tr>
-    <tr>
-      <th>merge_height</th>
-      <td><p>If provided, dendrogramws will be merged at that height.</p></td>
+      <th>gghm</th>
+      <td><p>An object of class <code>ggheatmap</code></p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>hclust_semisupervised returns a list. The first element of the list
-is the data, reordered so that the merged hclust object will work. The second
-element is the result of the semi-supervised hierarchical clustering.</p>
+    <p><code>get_data()</code> recovers the table with an ID column named <code>observations</code>, which
+if a factor that uses the same ordered levels as the heatmap. Those levels are
+also provided by calling <code>get_colLevels()</code>. For plots where you'd like to
+align the rows to the rows of the heatmap, <code>get_rowLevels()</code> provides the
+order of the rows in the heatmap.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

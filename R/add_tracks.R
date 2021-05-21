@@ -20,6 +20,7 @@
 #' @param track_pos One of: 'bottom' or 'top'.
 #' @param legend_action A string specifying how guides should be treated in the layout.
 #' See: guides in [patchwork::plot_layout()].
+#' @param show_legend If FALSE, no legend is added to the ggheatmap for the tracks
 #'
 #' @export
 #' @importFrom dplyr select
@@ -33,7 +34,8 @@ add_tracks <- function(gghm,
                        leg_ncol = 3,
                        fontsize = 11,
                        track_pos = "bottom",
-                       legend_action = "collect") {
+                       legend_action = "collect",
+                       show_legend = TRUE) {
     ppdf <- gghm$data %>%
         select(observations, {{ track_columns }})
 
@@ -49,6 +51,9 @@ add_tracks <- function(gghm,
 
     track_plt_ptch <- wrap_plots(track_plots, ncol = 1, tag_level = 'new') &
         guides(fill = guide_legend(ncol = leg_ncol))
+
+    if(!show_legend)
+        track_plt_ptch <- track_plt_ptch & guides(fill = FALSE)
 
     #-- Align
     annot_hm <- align_to_hm(gghm, track_plt_ptch, pos = track_pos,
@@ -69,6 +74,7 @@ add_tracks <- function(gghm,
 #' * A valid palette used by `RColorBrewer`. See: [RColorBrewer::display.brewer.all()]
 #' * A named vector of colors passed to [ggplot2::scale_fill_manual()].
 #' @param colors_title A title for the color legend
+#' @param rows_title A title for the variables in the rows
 #' @param track_prop A number between 0 and 1, representing the height
 #' proportion between new tracks and the heatmap.
 #' @param fontsize Base fontsize for plot, which will be used by the theme.
@@ -86,6 +92,7 @@ add_matrix_track <- function(gghm,
                        track_columns,
                        track_colors = "Blues",
                        colors_title = "value",
+                       rows_title = NULL,
                        track_prop = 0.3,
                        fontsize = 11,
                        track_pos = "bottom",
@@ -97,8 +104,14 @@ add_matrix_track <- function(gghm,
         select(observations, {{ track_columns }})
 
     #-- Get plot
-    mat_plt <- .matrix_track_plot(ppdf, track_colors, colors_title, fontsize) +
+    mat_plt <- .matrix_track_plot(ppdf, track_columns, track_colors, colors_title, fontsize) +
         guides(fill = guide_colorbar(direction = colorbar_dir))
+
+    if(!is.null(rows_title)) {
+        mat_plt <- mat_plt +
+            theme(axis.title.y = element_text(color = "black")) +
+            labs(y = rows_title)
+    }
 
     #-- Align
     annot_hm <- align_to_hm(gghm, mat_plt, pos = track_pos,
@@ -173,9 +186,10 @@ add_matrix_track <- function(gghm,
 #'@importFrom magrittr %>%
 #'@importFrom ggplot2 ggplot aes geom_tile labs scale_fill_distiller
 #'@importFrom tidyr pivot_longer
-.matrix_track_plot <- function(ppdf, track_colors, colors_title, fontsize) {
+.matrix_track_plot <- function(ppdf, track_columns, track_colors, colors_title, fontsize) {
     ppdf_melt <- ppdf %>%
-        pivot_longer(!observations)
+        pivot_longer(!observations) %>%
+        mutate(name = factor(name, levels = rev(track_columns)))
 
     plt <- ggplot(ppdf_melt, aes(observations, name, fill = value)) +
         geom_tile() +
