@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plots a ggplot heatmap — ggheatmap • ggheatmap</title>
+<title>Plots a ggplot heatmap — ggheatmap • ggheatmapper</title>
 
 
 <!-- jquery -->
@@ -73,8 +73,8 @@ constructing panels." />
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">ggheatmap</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <a class="navbar-link" href="../index.html">ggheatmapper</a>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@ constructing panels." />
   </a>
 </li>
 <li>
-  <a href="../articles/ggheatmap.html">Get started</a>
+  <a href="../articles/ggheatmapper.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -126,6 +126,7 @@ constructing panels.</p>
   hm_colors <span class='op'>=</span> <span class='st'>"RdYlBu"</span>,
   hm_color_values <span class='op'>=</span> <span class='cn'>NULL</span>,
   hm_color_breaks <span class='op'>=</span> <span class='fu'>waiver</span><span class='op'>(</span><span class='op'>)</span>,
+  hm_color_limits <span class='op'>=</span> <span class='cn'>NULL</span>,
   scale <span class='op'>=</span> <span class='cn'>FALSE</span>,
   center <span class='op'>=</span> <span class='cn'>FALSE</span>,
   cluster_rows <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -206,6 +207,11 @@ between colors. Passed to <code>values</code> from <code><a href='https://ggplot
       <th>hm_color_breaks</th>
       <td><p>Breaks for heatmap colors. Passed to <code>breaks</code> from
 <code><a href='https://ggplot2.tidyverse.org/reference/scale_gradient.html'>ggplot2::scale_fill_gradientn()</a></code></p></td>
+    </tr>
+    <tr>
+      <th>hm_color_limits</th>
+      <td><p>A vector with length = 2 for limits of the heatmap
+color scale. Passed to <code>limits</code> from <code><a href='https://ggplot2.tidyverse.org/reference/scale_gradient.html'>ggplot2::scale_fill_gradientn()</a></code>.</p></td>
     </tr>
     <tr>
       <th>scale</th>

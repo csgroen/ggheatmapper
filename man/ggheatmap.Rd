@@ -11,6 +11,7 @@ ggheatmap(
   hm_colors = "RdYlBu",
   hm_color_values = NULL,
   hm_color_breaks = waiver(),
+  hm_color_limits = NULL,
   scale = FALSE,
   center = FALSE,
   cluster_rows = TRUE,
@@ -79,6 +80,9 @@ between colors. Passed to \code{values} from \code{\link[ggplot2:scale_gradient]
 
 \item{hm_color_breaks}{Breaks for heatmap colors. Passed to \code{breaks} from
 \code{\link[ggplot2:scale_gradient]{ggplot2::scale_fill_gradientn()}}}
+
+\item{hm_color_limits}{A vector with length = 2 for limits of the heatmap
+color scale. Passed to \code{limits} from \code{\link[ggplot2:scale_gradient]{ggplot2::scale_fill_gradientn()}}.}
 
 \item{scale}{If TRUE, data will be scaled (z-score)}
 

@@ -30,6 +30,8 @@ globalVariables(c(".pal_collection", "observations", "rows", "name", "value",
 #' between colors. Passed to `values` from [ggplot2::scale_fill_gradientn()]
 #' @param hm_color_breaks Breaks for heatmap colors. Passed to `breaks` from
 #' [ggplot2::scale_fill_gradientn()]
+#' @param hm_color_limits A vector with length = 2 for limits of the heatmap
+#' color scale. Passed to `limits` from [ggplot2::scale_fill_gradientn()].
 #' @param scale If TRUE, data will be scaled (z-score)
 #' @param center If TRUE, data will be centered
 #' @param cluster_rows If TRUE, rows will be clustered with [stats::hclust()]
@@ -93,6 +95,7 @@ globalVariables(c(".pal_collection", "observations", "rows", "name", "value",
 #' @importFrom dplyr is_grouped_df rename filter mutate
 #' @importFrom patchwork plot_layout
 #' @importFrom ggplot2 waiver
+#' @importFrom scales squish
 #' @export
 ggheatmap <- function(table,
                       colv = NULL,
@@ -100,6 +103,7 @@ ggheatmap <- function(table,
                       hm_colors = "RdYlBu",
                       hm_color_values = NULL,
                       hm_color_breaks = waiver(),
+                      hm_color_limits = NULL,
                       scale = FALSE,
                       center = FALSE,
                       cluster_rows = TRUE,
@@ -136,6 +140,7 @@ ggheatmap <- function(table,
 
     # Get variables if NULL
     if(is.null(colv)) {
+        message("Running `ggheatmap` in matrix mode. If that's not intentional, provide a `colv`.")
         table <- t(table) %>%
             as.data.frame() %>%
             rownames_to_column("observations")
@@ -179,7 +184,7 @@ ggheatmap <- function(table,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, hm_color_values, raster,
                             fontsize, facetted, row_list, row_facetting_space,
-                            colorbar_dir) +
+                            colorbar_dir, hm_color_limits) +
         plot_layout(tag_level = 'new')
     # Add lines
     line_geom <- .line_geom(table, grouped, group_lines, group_line_color,
@@ -288,7 +293,7 @@ ggheatmap <- function(table,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, color_values, raster,
                             fontsize, facetted, row_list, row_facetting_space,
-                            colorbar_dir) {
+                            colorbar_dir, color_limits) {
     if(facetted) {
         # row_table <- stack(row_list) %>% as_tibble() %>% dplyr::rename(rows = values, rgroup = ind)
         row_table <- tibble(rows = unlist(row_list),
@@ -314,10 +319,12 @@ ggheatmap <- function(table,
     }
     if (length(hm_colors) == 1 & hm_colors[1] %in% .pal_collection) {
         gghm <- gghm +
-            scale_fill_distiller(palette = hm_colors, breaks = breaks, values = color_values)
+            scale_fill_distiller(palette = hm_colors, breaks = breaks,
+                                 values = color_values, limits = color_limits, oob = squish)
     } else {
         gghm <- gghm +
-            scale_fill_gradientn(colors = hm_colors, breaks = breaks, values = color_values)
+            scale_fill_gradientn(colors = hm_colors, breaks = breaks,
+                                 values = color_values, limits = color_limits, oob = squish)
     }
     gghm <- gghm +
         labs(x = column_title, y = rows_title, fill = colors_title) +

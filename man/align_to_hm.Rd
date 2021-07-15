@@ -19,7 +19,7 @@ align_to_hm(
 \item{gplot}{Another object of class ggplot, that shares either columns
 (if \code{pos='top'} or \code{pos='bottom'}) or rows (if \code{pos='left'}) with the heatmap.
 Note: to create the gplot, make sure you use \code{\link[=gghmData]{gghmData()}} to get the data, or
-alternatively \code{\link[=gghm_rowLevels]{gghm_rowLevels()}} or \code{\link[=gghm_colLevels]{gghm_colLevels()}}.}
+alternatively \code{\link[=get_rowLevels]{get_rowLevels()}} or \code{\link[=get_colLevels]{get_colLevels()}}.}
 
 \item{pos}{One of 'top', 'bottom' or 'left'.}
 

@@ -1,5 +1,5 @@
 ---
-title: "ggheatmap: Tile-able heatmaps that play well with ggplots"
+title: "ggheatmapper: Tile-able heatmaps that play well with ggplots"
 author: "Clarice S. Groeneveld"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -19,20 +19,20 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-`ggheatmap` is built using `ggplot2` and the `patchwork` framework for aligning plots.
+`ggheatmapper` is built using `ggplot2` and the `patchwork` framework for aligning plots.
 It supports adding into the heatmap and all the powerful tweaks enabled by `theme`s in ggplot,
 and helps you align more information about your data to the original heatmap to make "complex
 heatmaps" with a more modern and *tweakable* framework.
 
 # Using a matrix as your table
-The simplest, yet less powerful, way to use `ggheatmap` is with a matrix as-is.
+The simplest, yet less powerful, way to use `ggheatmapper` is with a matrix as-is.
 Here, we demonstrate with a subset of a gene expression matrix for bladder cancer
 samples:
 
 ```{r fig.width=6, fig.height=3}
 library(tidyverse)
 library(patchwork)
-library(ggheatmap)
+library(ggheatmapper)
 
 data(tcgaBLCA_ex)
 gexp <- tcgaBLCA_ex$gexp
@@ -241,8 +241,8 @@ new_col <- (plt_subtype_count + plot_spacer()) +
 
 # Row facetting
 
-As of ggheatmap 0.1.2, we've added row facetting options using the `rowv` parameter.
-ggheatmap will render parts of the heatmap in different facets if the `rowv`
+As of ggheatmapper 0.1.2, we've added row facetting options using the `rowv` parameter.
+ggheatmapper will render parts of the heatmap in different facets if the `rowv`
 argument for the `ggheatmap` call is a named list:
 
 ```{r fig.width=7.5, fig.height=4}
