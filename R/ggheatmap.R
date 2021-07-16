@@ -437,7 +437,7 @@ ggheatmap <- function(table,
         annotate("text", y = 1, x = pull(gr_annot, {{group_label_position}}),
                  label = gr_annot$group_var,
                  hjust = 0, angle = group_label_angle, size = group_label_size) +
-        guides(fill = FALSE)
+        guides(fill = "none")
 
     return(track_plot)
 }

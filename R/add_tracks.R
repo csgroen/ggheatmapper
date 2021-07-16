@@ -53,7 +53,7 @@ add_tracks <- function(gghm,
         guides(fill = guide_legend(ncol = leg_ncol))
 
     if(!show_legend)
-        track_plt_ptch <- track_plt_ptch & guides(fill = FALSE)
+        track_plt_ptch <- track_plt_ptch & guides(fill = "none")
 
     #-- Align
     annot_hm <- align_to_hm(gghm, track_plt_ptch, pos = track_pos,
