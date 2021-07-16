@@ -137,7 +137,8 @@ theme_quant <- function(...) {
               plot.margin = margin(0,0,0,0),
               panel.spacing = unit(pspace, "pt"),
               legend.title = element_text(size = base_size),
-              legend.text = element_text(size = base_size-1))
+              legend.text = element_text(size = base_size-1),
+              plot_title = element_text(hjust = 0.5))
 }
 
 #' @export
