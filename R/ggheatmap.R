@@ -44,7 +44,6 @@ globalVariables(c(".pal_collection", "observations", "rows", "name", "value",
 #' @param raster If TRUE, [ggplot2::geom_raster()] will be used for the
 #' heatmap tiles instead of [ggplot2::geom_tile()]. Will be recommended by
 #' the function for large tables.
-#' @param plot_title Plot title, shown on top.
 #' @param rows_title A title for row variables.
 #' @param column_title A title for the column variable.
 #' @param colors_title A title for the color legend.
@@ -112,7 +111,6 @@ ggheatmap <- function(table,
                       dist_method = "euclidean",
                       clustering_method = "complete",
                       raster = FALSE,
-                      plot_title = NULL,
                       rows_title = "",
                       column_title = "",
                       colors_title = "value",
@@ -186,7 +184,7 @@ ggheatmap <- function(table,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, hm_color_values, raster,
                             fontsize, facetted, row_list, row_facetting_space,
-                            colorbar_dir, hm_color_limits, plot_title) +
+                            colorbar_dir, hm_color_limits) +
         plot_layout(tag_level = 'new')
     # Add lines
     line_geom <- .line_geom(table, grouped, group_lines, group_line_color,
@@ -295,7 +293,7 @@ ggheatmap <- function(table,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, color_values, raster,
                             fontsize, facetted, row_list, row_facetting_space,
-                            colorbar_dir, color_limits, plot_title) {
+                            colorbar_dir, color_limits) {
     if(facetted) {
         # row_table <- stack(row_list) %>% as_tibble() %>% dplyr::rename(rows = values, rgroup = ind)
         row_table <- tibble(rows = unlist(row_list),
@@ -342,9 +340,6 @@ ggheatmap <- function(table,
         gghm <- gghm +
             theme(axis.text.x = element_blank(),
                   axis.ticks.x = element_blank())
-    }
-    if(!is.null(plot_title)) {
-        gghm <- gghm + labs(title = plot_title)
     }
 
     return(gghm)
