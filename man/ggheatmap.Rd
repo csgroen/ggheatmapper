@@ -19,7 +19,6 @@ ggheatmap(
   dist_method = "euclidean",
   clustering_method = "complete",
   raster = FALSE,
-  plot_title = NULL,
   rows_title = "",
   column_title = "",
   colors_title = "value",
@@ -103,8 +102,6 @@ correlation distance (\code{1-cor()}), with \code{dist_method} passed to method 
 \item{raster}{If TRUE, \code{\link[ggplot2:geom_tile]{ggplot2::geom_raster()}} will be used for the
 heatmap tiles instead of \code{\link[ggplot2:geom_tile]{ggplot2::geom_tile()}}. Will be recommended by
 the function for large tables.}
-
-\item{plot_title}{Plot title, shown on top.}
 
 \item{rows_title}{A title for row variables.}
 
