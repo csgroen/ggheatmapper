@@ -221,6 +221,7 @@ ggheatmap <- function(table,
     full_hm$gghm$row_levels <- levels(pptable$rows)
     full_hm$gghm$col_levels <- levels(full_hm$data$observations)
     full_hm$gghm$line_geom <- line_geom
+    full_hm$gghm$hclust <- cluster_obs
 
     return(full_hm)
 
