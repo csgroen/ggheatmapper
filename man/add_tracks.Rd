@@ -8,6 +8,7 @@ add_tracks(
   gghm,
   track_columns,
   track_colors = list(),
+  pal_dir = 1,
   track_prop = 0.3,
   leg_ncol = 3,
   fontsize = 11,
@@ -28,6 +29,9 @@ Can be either:
 \item A valid palette used by \code{RColorBrewer}. See: \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::display.brewer.all()}}
 \item A named vector of colors passed to \code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual()}}.
 }}
+
+\item{pal_dir}{palette direction, used if \code{track_colors} is a palette name.
+See: \code{\link[ggplot2:scale_brewer]{ggplot2::scale_color_brewer()}}}
 
 \item{track_prop}{A number between 0 and 1, representing the height
 proportion between new tracks and the heatmap.}

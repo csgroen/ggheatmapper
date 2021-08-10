@@ -74,7 +74,7 @@ are included in ggData(gghm)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggheatmapper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
       </span>
     </div>
 
@@ -123,6 +123,7 @@ are included in <code>ggData(gghm)</code>.</p>
   <span class='va'>gghm</span>,
   <span class='va'>track_columns</span>,
   track_colors <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  pal_dir <span class='op'>=</span> <span class='fl'>1</span>,
   track_prop <span class='op'>=</span> <span class='fl'>0.3</span>,
   leg_ncol <span class='op'>=</span> <span class='fl'>3</span>,
   fontsize <span class='op'>=</span> <span class='fl'>11</span>,
@@ -150,6 +151,11 @@ Can be either:</p><ul>
 <li><p>A valid palette used by <code>RColorBrewer</code>. See: <code><a href='https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html'>RColorBrewer::display.brewer.all()</a></code></p></li>
 <li><p>A named vector of colors passed to <code><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>ggplot2::scale_fill_manual()</a></code>.</p></li>
 </ul></td>
+    </tr>
+    <tr>
+      <th>pal_dir</th>
+      <td><p>palette direction, used if <code>track_colors</code> is a palette name.
+See: <code><a href='https://ggplot2.tidyverse.org/reference/scale_brewer.html'>ggplot2::scale_color_brewer()</a></code></p></td>
     </tr>
     <tr>
       <th>track_prop</th>

@@ -8,6 +8,7 @@ add_matrix_track(
   gghm,
   track_columns,
   track_colors = "Blues",
+  pal_dir = 1,
   colors_title = "value",
   rows_title = NULL,
   track_prop = 0.3,
@@ -27,7 +28,11 @@ Can be either:
 \itemize{
 \item A valid palette used by \code{RColorBrewer}. See: \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::display.brewer.all()}}
 \item A named vector of colors passed to \code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual()}}.
+\item A vector of colors passed to \code{\link[ggplot2:scale_gradient]{ggplot2::scale_fill_gradientn()}}.
 }}
+
+\item{pal_dir}{palette direction, used if \code{track_colors} is a palette name.
+See: \code{\link[ggplot2:scale_brewer]{ggplot2::scale_color_brewer()}}}
 
 \item{colors_title}{A title for the color legend}
 

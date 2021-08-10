@@ -330,7 +330,7 @@ ggheatmap <- function(table,
     gghm <- gghm +
         labs(x = column_title, y = rows_title, fill = colors_title) +
         .theme_heatmap(row_facetting_space, base_size = fontsize) +
-        guides(fill = guide_colorbar(direction = colorbar_dir))
+        guides(fill = guide_colorbar(direction = colorbar_dir, title.position = "top"))
 
     if(!show_rownames) {
         gghm <- gghm +

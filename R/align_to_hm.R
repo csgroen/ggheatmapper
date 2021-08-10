@@ -91,7 +91,9 @@ align_to_hm <- function(gghm, gplot,
                           params = params,
                           design = new_design,
                           row_levels = gghm$gghm$row_levels,
-                          col_levels = gghm$gghm$col_levels)
+                          col_levels = gghm$gghm$col_levels,
+                          line_geom = gghm$gghm$line_geom,
+                          hclust = gghm$gghm$hclust)
 
 
     return(new_gghm)

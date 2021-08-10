@@ -11,6 +11,8 @@
 #' * NULL, in which case all colors will be chosen automatically.
 #' * A valid palette used by `RColorBrewer`. See: [RColorBrewer::display.brewer.all()]
 #' * A named vector of colors passed to [ggplot2::scale_fill_manual()].
+#' @param pal_dir palette direction, used if `track_colors` is a palette name.
+#' See: [ggplot2::scale_color_brewer()]
 #' @param track_prop A number between 0 and 1, representing the height
 #' proportion between new tracks and the heatmap.
 #' @param leg_ncol Number of columns in the track legends. Passed to
@@ -20,6 +22,7 @@
 #' @param track_pos One of: 'bottom' or 'top'.
 #' @param legend_action A string specifying how guides should be treated in the layout.
 #' See: guides in [patchwork::plot_layout()].
+
 #' @param show_legend If FALSE, no legend is added to the ggheatmap for the tracks
 #'
 #' @export
@@ -30,6 +33,7 @@
 add_tracks <- function(gghm,
                        track_columns,
                        track_colors = list(),
+                       pal_dir = 1,
                        track_prop = 0.3,
                        leg_ncol = 3,
                        fontsize = 11,
@@ -47,7 +51,8 @@ add_tracks <- function(gghm,
 
     #-- Track plots
     track_plots <- lapply(track_columns, .track_plot, ppdf, track_colors, col_cls,
-                          fontsize, line_geom = gghm$gghm$line_geom, gghm$gghm$params[["show_rownames"]])
+                          fontsize, line_geom = gghm$gghm$line_geom, gghm$gghm$params[["show_rownames"]],
+                          pal_dir = pal_dir)
 
     track_plt_ptch <- wrap_plots(track_plots, ncol = 1, tag_level = 'new') &
         guides(fill = guide_legend(ncol = leg_ncol))
@@ -73,6 +78,9 @@ add_tracks <- function(gghm,
 #' Can be either:
 #' * A valid palette used by `RColorBrewer`. See: [RColorBrewer::display.brewer.all()]
 #' * A named vector of colors passed to [ggplot2::scale_fill_manual()].
+#' * A vector of colors passed to [ggplot2::scale_fill_gradientn()].
+#' @param pal_dir palette direction, used if `track_colors` is a palette name.
+#' See: [ggplot2::scale_color_brewer()]
 #' @param colors_title A title for the color legend
 #' @param rows_title A title for the variables in the rows
 #' @param track_prop A number between 0 and 1, representing the height
@@ -91,6 +99,7 @@ add_tracks <- function(gghm,
 add_matrix_track <- function(gghm,
                        track_columns,
                        track_colors = "Blues",
+                       pal_dir = 1,
                        colors_title = "value",
                        rows_title = NULL,
                        track_prop = 0.3,
@@ -104,8 +113,8 @@ add_matrix_track <- function(gghm,
         select(observations, {{ track_columns }})
 
     #-- Get plot
-    mat_plt <- .matrix_track_plot(ppdf, track_columns, track_colors, colors_title, fontsize) +
-        guides(fill = guide_colorbar(direction = colorbar_dir))
+    mat_plt <- .matrix_track_plot(ppdf, track_columns, track_colors, colors_title, fontsize, pal_dir) +
+        guides(fill = guide_colorbar(direction = colorbar_dir, title.position = "top"))
 
     if(!is.null(rows_title)) {
         mat_plt <- mat_plt +
@@ -145,7 +154,7 @@ add_matrix_track <- function(gghm,
 #' @importFrom ggplot2 ggplot aes geom_tile labs scale_y_discrete scale_fill_brewer
 #' scale_fill_distiller
 .track_plot <- function(tcol, ppdf, track_colors, col_cls, fontsize, line_geom,
-                        show_rownames) {
+                        show_rownames, pal_dir) {
     #-- Plot
     tplot <- ppdf %>%
         pivot_longer(!! tcol) %>%
@@ -165,10 +174,10 @@ add_matrix_track <- function(gghm,
     if (length(tpal) == 1) {
         if(col_cls[tcol] %in% c("factor", "character", "Date")) {
             tplot <- tplot +
-                scale_fill_brewer(palette = tpal)
+                scale_fill_brewer(palette = tpal, direction = pal_dir)
         } else {
             tplot <- tplot +
-                scale_fill_distiller(palette = tpal)
+                scale_fill_distiller(palette = tpal, direction = pal_dir)
         }
     } else {
         if(col_cls[tcol] %in% c("factor", "character")) {
@@ -186,7 +195,8 @@ add_matrix_track <- function(gghm,
 #'@importFrom magrittr %>%
 #'@importFrom ggplot2 ggplot aes geom_tile labs scale_fill_distiller
 #'@importFrom tidyr pivot_longer
-.matrix_track_plot <- function(ppdf, track_columns, track_colors, colors_title, fontsize) {
+.matrix_track_plot <- function(ppdf, track_columns, track_colors, colors_title, fontsize,
+                               pal_dir) {
     ppdf_melt <- ppdf %>%
         pivot_longer(!observations) %>%
         mutate(name = factor(name, levels = rev(track_columns)))
@@ -196,9 +206,9 @@ add_matrix_track <- function(gghm,
         labs(fill = colors_title) +
         .theme_track(base_size = fontsize)
 
-    if(track_colors %in% .continuous_pals) {
+    if(length(track_colors)==1) {
         plt <- plt +
-            scale_fill_distiller(palette = track_colors, direction = 1)
+            scale_fill_distiller(palette = track_colors, direction = pal_dir)
     } else {
         plt <- plt +
             scale_fill_gradientn(colors = track_colors)
