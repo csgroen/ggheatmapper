@@ -67,11 +67,11 @@ annotate_gghm <- function(gghm, annot_labels, side = "left",
 #' are all built on top of [ggplot2::theme_minimal()].
 #'
 #' `theme_sparse()` is the baseline simple and spartan theme to build plots that align
-#' with columns of `ggheatmap`s. `theme_sparse2()` is designed for plots that will
-#' align to rows of the `ggheatmap`. `theme_quant()` adds horizontal lines to
-#' `theme_sparse()` and can be a useful upgrade for displaying numeric values in
-#' the y-axis. `theme_scatter()` and `theme_clean()` are all-purpose theme for
-#' building ggplots.
+#' with columns of `ggheatmap`s. `theme_sparse2()` and `theme_sparse3()` are designed
+#' for plots that will align to rows of the `ggheatmap`.
+#' `theme_quant()` adds horizontal lines to `theme_sparse()` and can be a useful
+#' upgrade for displaying numeric values in the y-axis.
+#' `theme_scatter()` and `theme_clean()` are all-purpose themes for building ggplots.
 #'
 #' @param ... all arguments passed to `ggplot2::theme_minimal()`.
 #' @importFrom ggplot2 theme_minimal theme element_blank element_line element_text
@@ -99,6 +99,20 @@ theme_sparse2 <- function(...) {
               axis.text.x = element_text(color = 'black'),
               axis.ticks.y = element_blank(),
               axis.text.y = element_blank(),
+              plot.margin = margin(0,0,0,0))
+}
+#' @export
+#' @rdname theme_sparse
+#' @importFrom ggplot2 theme_minimal theme element_blank element_line element_text margin
+theme_sparse3 <- function(...) {
+    theme_minimal(...) +
+        theme(panel.grid = element_blank(),
+              axis.title.y = element_text(color = 'black'),
+              axis.title.x = element_text(color = 'black'),
+              axis.ticks.x = element_line(color = 'black'),
+              axis.text.x = element_text(color = 'black'),
+              axis.text.y = element_text(color = 'black'),
+              axis.ticks.y = element_line(color = 'black'),
               plot.margin = margin(0,0,0,0))
 }
 #' @export

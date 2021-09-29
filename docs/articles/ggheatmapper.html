@@ -60,13 +60,13 @@
 
       
 
-      </header><script src="ggheatmapper_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="ggheatmapper_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>ggheatmapper: Tile-able heatmaps that play well with ggplots</h1>
                         <h4 class="author">Clarice S. Groeneveld</h4>
             
-            <h4 class="date">2021-08-10</h4>
+            <h4 class="date">2021-09-29</h4>
       
       
       <div class="hidden name"><code>ggheatmapper.Rmd</code></div>
@@ -88,9 +88,9 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</span>
 <span class="co">#&gt; ✓ ggplot2 3.3.5     ✓ purrr   0.3.4</span>
-<span class="co">#&gt; ✓ tibble  3.1.3     ✓ dplyr   1.0.7</span>
+<span class="co">#&gt; ✓ tibble  3.1.4     ✓ dplyr   1.0.7</span>
 <span class="co">#&gt; ✓ tidyr   1.1.3     ✓ stringr 1.4.0</span>
-<span class="co">#&gt; ✓ readr   2.0.0     ✓ forcats 0.5.1</span>
+<span class="co">#&gt; ✓ readr   2.0.1     ✓ forcats 0.5.1</span>
 <span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span>
 <span class="co">#&gt; x dplyr::filter() masks stats::filter()</span>
 <span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span>
@@ -910,7 +910,6 @@
         axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span>, angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span>, vjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
 <span class="co">#&gt; "none")` instead.</span>
-
 <span class="va">plt_subtype_count</span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-12-1.png" width="384"></p>
 <p>Then, we can just use standard <code>patchwork</code> to align the <code>ggheatmap</code> and our new plots (as they won’t be aligned with the heatmap part of the plot, but with the entire plot):</p>
