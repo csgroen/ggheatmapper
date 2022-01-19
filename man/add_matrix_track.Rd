@@ -35,6 +35,9 @@ See: \code{\link[ggplot2:scale_brewer]{ggplot2::scale_color_brewer()}}}
 
 \item{colors_title}{A title for the color legend}
 
+\item{color_limits}{NULL or a vector of two values, lower and upper limits
+for the colors. See: \code{\link[ggplot2:scale_gradient]{ggplot2::scale_fill_gradientn()}}.}
+
 \item{rows_title}{A title for the variables in the rows}
 
 \item{track_prop}{A number between 0 and 1, representing the height
@@ -47,9 +50,6 @@ Ultimately passed to \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}} as 
 
 \item{legend_action}{A string specifying how guides should be treated in the layout.
 See: guides in \code{\link[patchwork:plot_layout]{patchwork::plot_layout()}}.}
-
-\item{colors_limits}{NULL or a vector of two values, lower and upper limits
-for the colors. See: \code{\link[ggplot2:scale_gradient]{ggplot2::scale_fill_gradientn()}}.}
 }
 \description{
 add_matrix_track() is a shortcut for building a new panel of \code{ggplot2::geom_tile()}s

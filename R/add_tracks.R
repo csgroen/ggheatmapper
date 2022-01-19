@@ -80,7 +80,7 @@ add_tracks <- function(gghm,
 #' @param pal_dir palette direction, used if `track_colors` is a palette name.
 #' See: [ggplot2::scale_color_brewer()]
 #' @param colors_title A title for the color legend
-#' @param colors_limits NULL or a vector of two values, lower and upper limits
+#' @param color_limits NULL or a vector of two values, lower and upper limits
 #' for the colors. See: [ggplot2::scale_fill_gradientn()].
 #' @param rows_title A title for the variables in the rows
 #' @param track_prop A number between 0 and 1, representing the height
