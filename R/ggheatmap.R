@@ -321,11 +321,14 @@ ggheatmap <- function(table,
     if (length(hm_colors) == 1 & hm_colors[1] %in% .pal_collection) {
         gghm <- gghm +
             scale_fill_distiller(palette = hm_colors, breaks = breaks,
-                                 values = color_values, limits = color_limits, oob = squish)
+                                 values = scales::rescale(color_values),
+                                 limits = color_limits, oob = squish)
     } else {
         gghm <- gghm +
             scale_fill_gradientn(colors = hm_colors, breaks = breaks,
-                                 values = color_values, limits = color_limits, oob = squish)
+                                 values = scales::rescale(color_values),
+                                 limits = color_limits,
+                                 oob = scales::squish)
     }
     gghm <- gghm +
         labs(x = column_title, y = rows_title, fill = colors_title) +

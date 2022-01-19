@@ -22,7 +22,6 @@
 #' @param track_pos One of: 'bottom' or 'top'.
 #' @param legend_action A string specifying how guides should be treated in the layout.
 #' See: guides in [patchwork::plot_layout()].
-
 #' @param show_legend If FALSE, no legend is added to the ggheatmap for the tracks
 #'
 #' @export
@@ -77,11 +76,12 @@ add_tracks <- function(gghm,
 #' @param track_colors A named list where names are the same as `track_columns`.
 #' Can be either:
 #' * A valid palette used by `RColorBrewer`. See: [RColorBrewer::display.brewer.all()]
-#' * A named vector of colors passed to [ggplot2::scale_fill_manual()].
 #' * A vector of colors passed to [ggplot2::scale_fill_gradientn()].
 #' @param pal_dir palette direction, used if `track_colors` is a palette name.
 #' See: [ggplot2::scale_color_brewer()]
 #' @param colors_title A title for the color legend
+#' @param colors_limits NULL or a vector of two values, lower and upper limits
+#' for the colors. See: [ggplot2::scale_fill_gradientn()].
 #' @param rows_title A title for the variables in the rows
 #' @param track_prop A number between 0 and 1, representing the height
 #' proportion between new tracks and the heatmap.
@@ -90,7 +90,6 @@ add_tracks <- function(gghm,
 #' @param track_pos One of: 'bottom' or 'top'.
 #' @param legend_action A string specifying how guides should be treated in the layout.
 #' See: guides in [patchwork::plot_layout()].
-#' @param colorbar_dir one of "vertical" or "horizontal". See [ggplot2::guide_colorbar]
 #'
 #' @export
 #' @importFrom dplyr ungroup select
@@ -101,20 +100,24 @@ add_matrix_track <- function(gghm,
                        track_colors = "Blues",
                        pal_dir = 1,
                        colors_title = "value",
+                       color_limits = NULL,
                        rows_title = NULL,
                        track_prop = 0.3,
                        fontsize = 11,
                        track_pos = "bottom",
-                       legend_action = "collect",
-                       colorbar_dir = "vertical") {
+                       legend_action = "collect") {
+
     #-- Get data
     ppdf <- gghm$data %>%
         ungroup() %>%
         select(observations, {{ track_columns }})
 
+
     #-- Get plot
-    mat_plt <- .matrix_track_plot(ppdf, track_columns, track_colors, colors_title, fontsize, pal_dir) +
-        guides(fill = guide_colorbar(direction = colorbar_dir, title.position = "top"))
+    mat_plt <- .matrix_track_plot(ppdf, track_columns, track_colors,
+                                  colors_title, fontsize, pal_dir, color_limits) +
+        guides(fill = guide_colorbar(direction = gghm$gghm$plots$hm$guides$fill$direction, title.position = "top")) +
+        gghm$gghm$line_geom
 
     if(!is.null(rows_title)) {
         mat_plt <- mat_plt +
@@ -196,7 +199,7 @@ add_matrix_track <- function(gghm,
 #'@importFrom ggplot2 ggplot aes geom_tile labs scale_fill_distiller
 #'@importFrom tidyr pivot_longer
 .matrix_track_plot <- function(ppdf, track_columns, track_colors, colors_title, fontsize,
-                               pal_dir) {
+                               pal_dir, color_limits) {
     ppdf_melt <- ppdf %>%
         pivot_longer(!observations) %>%
         mutate(name = factor(name, levels = rev(track_columns)))
@@ -208,10 +211,13 @@ add_matrix_track <- function(gghm,
 
     if(length(track_colors)==1) {
         plt <- plt +
-            scale_fill_distiller(palette = track_colors, direction = pal_dir)
+            scale_fill_distiller(palette = track_colors,
+                                 direction = pal_dir, limits = color_limits,
+                                 oob = scales::squish)
     } else {
         plt <- plt +
-            scale_fill_gradientn(colors = track_colors)
+            scale_fill_gradientn(colors = track_colors, limits = color_limits,
+                                 oob = scales::squish)
     }
     return(plt)
 }

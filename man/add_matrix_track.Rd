@@ -10,12 +10,12 @@ add_matrix_track(
   track_colors = "Blues",
   pal_dir = 1,
   colors_title = "value",
+  color_limits = NULL,
   rows_title = NULL,
   track_prop = 0.3,
   fontsize = 11,
   track_pos = "bottom",
-  legend_action = "collect",
-  colorbar_dir = "vertical"
+  legend_action = "collect"
 )
 }
 \arguments{
@@ -27,7 +27,6 @@ add_matrix_track(
 Can be either:
 \itemize{
 \item A valid palette used by \code{RColorBrewer}. See: \code{\link[RColorBrewer:ColorBrewer]{RColorBrewer::display.brewer.all()}}
-\item A named vector of colors passed to \code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual()}}.
 \item A vector of colors passed to \code{\link[ggplot2:scale_gradient]{ggplot2::scale_fill_gradientn()}}.
 }}
 
@@ -49,7 +48,8 @@ Ultimately passed to \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}} as 
 \item{legend_action}{A string specifying how guides should be treated in the layout.
 See: guides in \code{\link[patchwork:plot_layout]{patchwork::plot_layout()}}.}
 
-\item{colorbar_dir}{one of "vertical" or "horizontal". See \link[ggplot2:guide_colourbar]{ggplot2::guide_colorbar}}
+\item{colors_limits}{NULL or a vector of two values, lower and upper limits
+for the colors. See: \code{\link[ggplot2:scale_gradient]{ggplot2::scale_fill_gradientn()}}.}
 }
 \description{
 add_matrix_track() is a shortcut for building a new panel of \code{ggplot2::geom_tile()}s
