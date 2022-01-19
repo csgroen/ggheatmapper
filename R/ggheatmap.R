@@ -95,7 +95,7 @@ globalVariables(c(".pal_collection", "observations", "rows", "name", "value",
 #' @importFrom dplyr is_grouped_df rename filter mutate
 #' @importFrom patchwork plot_layout
 #' @importFrom ggplot2 waiver
-#' @importFrom scales squish
+#' @importFrom scales squish rescale
 #' @export
 ggheatmap <- function(table,
                       colv = NULL,
@@ -321,14 +321,14 @@ ggheatmap <- function(table,
     if (length(hm_colors) == 1 & hm_colors[1] %in% .pal_collection) {
         gghm <- gghm +
             scale_fill_distiller(palette = hm_colors, breaks = breaks,
-                                 values = scales::rescale(color_values),
+                                 values = rescale(color_values),
                                  limits = color_limits, oob = squish)
     } else {
         gghm <- gghm +
             scale_fill_gradientn(colors = hm_colors, breaks = breaks,
-                                 values = scales::rescale(color_values),
+                                 values = rescale(color_values),
                                  limits = color_limits,
-                                 oob = scales::squish)
+                                 oob = squish)
     }
     gghm <- gghm +
         labs(x = column_title, y = rows_title, fill = colors_title) +
