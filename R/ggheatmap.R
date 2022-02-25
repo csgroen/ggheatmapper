@@ -297,10 +297,12 @@ ggheatmap <- function(table,
                             colorbar_dir, color_limits) {
     if(facetted) {
         # row_table <- stack(row_list) %>% as_tibble() %>% dplyr::rename(rows = values, rgroup = ind)
+        row_levels <- levels(pptable$rows)
         row_table <- tibble(rows = unlist(row_list),
                             rgroup = factor(rep(names(row_list), sapply(row_list, length)),
                                             levels = names(row_list)))
-        pptable <- left_join(pptable, row_table, by = 'rows')
+        pptable <- left_join(pptable, row_table, by = 'rows') %>%
+            mutate(rows = factor(rows, levels = row_levels))
 
         if(show_rownames) {
             gghm <- ggplot(pptable) + facet_grid(rows = 'rgroup', scales = 'free_y', space = 'free_y')
@@ -340,12 +342,11 @@ ggheatmap <- function(table,
             theme(axis.text.y = element_blank(),
                   axis.ticks.y = element_blank())
         }
-    if(! show_colnames) {
+    if(!show_colnames) {
         gghm <- gghm +
             theme(axis.text.x = element_blank(),
                   axis.ticks.x = element_blank())
     }
-
     return(gghm)
 }
 #' @importFrom magrittr %>%
