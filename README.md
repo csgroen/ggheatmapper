@@ -1,4 +1,4 @@
-# ggheatmapper - Tile-able heatmaps using ggheatmap and patchwork
+# ggheatmapper - Tile-able heatmaps using ggplot and patchwork
 
 To install, please use:
 ```r
