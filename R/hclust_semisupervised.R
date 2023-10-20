@@ -64,7 +64,6 @@ hclust_semisupervised <- function(data, groups, dist_method = "euclidean",
 
     #-- Make distance matrices
     if (dist_method %in% c("pearson", "spearman", "kendall")) {
-
         distlist <- lapply(groups, function(group) {
             as.dist(1 - cor(t(data[group,]), method = dist_method, use = cor_use))
         })

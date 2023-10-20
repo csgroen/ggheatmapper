@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggheatmapper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.12</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/ggheatmapper.html">Get started</a>
 </li>
@@ -60,13 +56,15 @@
 
       
 
-      </header><script src="ggheatmapper_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>ggheatmapper: Tile-able heatmaps that play well with ggplots</h1>
-                        <h4 class="author">Clarice S. Groeneveld</h4>
+      <h1 data-toc-skip>ggheatmapper: Tile-able heatmaps that play well
+with ggplots</h1>
+                        <h4 data-toc-skip class="author">Clarice S.
+Groeneveld</h4>
             
-            <h4 class="date">2021-09-29</h4>
+            <h4 data-toc-skip class="date">2023-10-20</h4>
       
       
       <div class="hidden name"><code>ggheatmapper.Rmd</code></div>
@@ -75,64 +73,107 @@
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p><code>ggheatmapper</code> is built using <code>ggplot2</code> and the <code>patchwork</code> framework for aligning plots. It supports adding into the heatmap and all the powerful tweaks enabled by <code>theme</code>s in ggplot, and helps you align more information about your data to the original heatmap to make “complex heatmaps” with a more modern and <em>tweakable</em> framework.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p><code>ggheatmapper</code> is built using <code>ggplot2</code> and the
+<code>patchwork</code> framework for aligning plots. It supports adding
+into the heatmap and all the powerful tweaks enabled by
+<code>theme</code>s in ggplot, and helps you align more information
+about your data to the original heatmap to make “complex heatmaps” with
+a more modern and <em>tweakable</em> framework.</p>
 </div>
-<div id="using-a-matrix-as-your-table" class="section level1">
-<h1 class="hasAnchor">
-<a href="#using-a-matrix-as-your-table" class="anchor"></a>Using a matrix as your table</h1>
-<p>The simplest, yet less powerful, way to use <code>ggheatmapper</code> is with a matrix as-is. Here, we demonstrate with a subset of a gene expression matrix for bladder cancer samples:</p>
+<div class="section level2">
+<h2 id="using-a-matrix-as-your-table">Using a matrix as your table<a class="anchor" aria-label="anchor" href="#using-a-matrix-as-your-table"></a>
+</h2>
+<p>The simplest, yet less powerful, way to use <code>ggheatmapper</code>
+is with a matrix as-is. Here, we demonstrate with a subset of a gene
+expression matrix for bladder cancer samples:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="co">#&gt; ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</span>
-<span class="co">#&gt; ✓ ggplot2 3.3.5     ✓ purrr   0.3.4</span>
-<span class="co">#&gt; ✓ tibble  3.1.4     ✓ dplyr   1.0.7</span>
-<span class="co">#&gt; ✓ tidyr   1.1.3     ✓ stringr 1.4.0</span>
-<span class="co">#&gt; ✓ readr   2.0.1     ✓ forcats 0.5.1</span>
-<span class="co">#&gt; ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──</span>
-<span class="co">#&gt; x dplyr::filter() masks stats::filter()</span>
-<span class="co">#&gt; x dplyr::lag()    masks stats::lag()</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ggheatmapper</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">tcgaBLCA_ex</span><span class="op">)</span>
-<span class="va">gexp</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gexp</span>
-
-<span class="va">gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggheatmap.html">ggheatmap</a></span><span class="op">(</span><span class="va">gexp</span>,
-          hm_colors <span class="op">=</span> <span class="st">'RdBu'</span>,
-          hm_color_values <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html">rescale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>,<span class="op">-</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="op">-</span><span class="fl">0.25</span>,<span class="fl">0</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>,
-          scale <span class="op">=</span> <span class="cn">TRUE</span>,
-          center <span class="op">=</span> <span class="cn">TRUE</span>,
-          show_dend_row <span class="op">=</span> <span class="cn">TRUE</span>,
-          colors_title <span class="op">=</span> <span class="st">"Scaled expression (log2 UQ)"</span>,
-          show_colnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; Running `ggheatmap` in matrix mode. If that's not intentional, provide a `colv`.</span>
-<span class="va">gghm</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr    </span> 1.1.3     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.1.4</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.5.0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2  </span> 3.4.3     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble   </span> 3.2.1</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr    </span> 1.0.2     </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use the conflicted package (<span style="color: #0000BB; font-style: italic;">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ggheatmapper</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Registered S3 methods overwritten by 'treeio':</span></span>
+<span><span class="co">#&gt;   method              from    </span></span>
+<span><span class="co">#&gt;   MRCA.phylo          tidytree</span></span>
+<span><span class="co">#&gt;   MRCA.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   Nnode.treedata      tidytree</span></span>
+<span><span class="co">#&gt;   Ntip.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   ancestor.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   ancestor.treedata   tidytree</span></span>
+<span><span class="co">#&gt;   child.phylo         tidytree</span></span>
+<span><span class="co">#&gt;   child.treedata      tidytree</span></span>
+<span><span class="co">#&gt;   full_join.phylo     tidytree</span></span>
+<span><span class="co">#&gt;   full_join.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   groupClade.phylo    tidytree</span></span>
+<span><span class="co">#&gt;   groupClade.treedata tidytree</span></span>
+<span><span class="co">#&gt;   groupOTU.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   groupOTU.treedata   tidytree</span></span>
+<span><span class="co">#&gt;   inner_join.phylo    tidytree</span></span>
+<span><span class="co">#&gt;   inner_join.treedata tidytree</span></span>
+<span><span class="co">#&gt;   is.rooted.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   nodeid.phylo        tidytree</span></span>
+<span><span class="co">#&gt;   nodeid.treedata     tidytree</span></span>
+<span><span class="co">#&gt;   nodelab.phylo       tidytree</span></span>
+<span><span class="co">#&gt;   nodelab.treedata    tidytree</span></span>
+<span><span class="co">#&gt;   offspring.phylo     tidytree</span></span>
+<span><span class="co">#&gt;   offspring.treedata  tidytree</span></span>
+<span><span class="co">#&gt;   parent.phylo        tidytree</span></span>
+<span><span class="co">#&gt;   parent.treedata     tidytree</span></span>
+<span><span class="co">#&gt;   root.treedata       tidytree</span></span>
+<span><span class="co">#&gt;   rootnode.phylo      tidytree</span></span>
+<span><span class="co">#&gt;   sibling.phylo       tidytree</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">tcgaBLCA_ex</span><span class="op">)</span></span>
+<span><span class="va">gexp</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gexp</span></span>
+<span></span>
+<span><span class="va">gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggheatmap.html">ggheatmap</a></span><span class="op">(</span><span class="va">gexp</span>,</span>
+<span>          hm_colors <span class="op">=</span> <span class="st">'RdBu'</span>,</span>
+<span>          hm_color_values <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>,<span class="op">-</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="op">-</span><span class="fl">0.25</span>,<span class="fl">0</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>          scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>          center <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>          show_dend_row <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>          colors_title <span class="op">=</span> <span class="st">"Scaled expression (log2 UQ)"</span>,</span>
+<span>          show_colnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running `ggheatmap` in matrix mode. If that's not intentional, provide a `colv`.</span></span>
+<span><span class="va">gghm</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-1-1.png" width="576"></p>
-<p>This method still will support extending with <code>align_to_hm</code> but would not support <code>add_tracks</code>. You can still modify this by using <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code> and adding <code>theme</code>, for example:</p>
+<p>This method still will support extending with
+<code>align_to_hm</code> but would not support <code>add_tracks</code>.
+You can still modify this by using <code>&amp;</code> and adding
+<code>theme</code>, for example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gghm</span> <span class="op">&amp;</span>
-  <span class="fu">theme</span><span class="op">(</span>axis.text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">gghm</span> <span class="op">&amp;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-2-1.png" width="576"></p>
 </div>
-<div id="using-tables-with-more-variables" class="section level1">
-<h1 class="hasAnchor">
-<a href="#using-tables-with-more-variables" class="anchor"></a>Using tables with more variables</h1>
-<p>If transpose our original table and extended it with new variables, we can unlock more features using <code>ggheatmap</code>.</p>
+<div class="section level2">
+<h2 id="using-tables-with-more-variables">Using tables with more variables<a class="anchor" aria-label="anchor" href="#using-tables-with-more-variables"></a>
+</h2>
+<p>If transpose our original table and extended it with new variables,
+we can unlock more features using <code>ggheatmap</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sample_annot</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">sample_annot</span> <span class="op">%&gt;%</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span>
-<span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">gexp</span><span class="op">)</span>
-<span class="va">tcgaBLCA_tb</span> <span class="op">&lt;-</span> <span class="va">gexp</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">rownames_to_column</span><span class="op">(</span><span class="st">"sample"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">left_join</span><span class="op">(</span><span class="va">sample_annot</span>, by <span class="op">=</span> <span class="st">"sample"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">tibble</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">group_by</span><span class="op">(</span><span class="va">consensusClass</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span><span class="op">)</span></code></pre></div>
-<table class="table">
+<code class="sourceCode R"><span><span class="va">sample_annot</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">sample_annot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">gexp</span><span class="op">)</span></span>
+<span><span class="va">tcgaBLCA_tb</span> <span class="op">&lt;-</span> <span class="va">gexp</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html" class="external-link">rownames_to_column</a></span><span class="op">(</span><span class="st">"sample"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">sample_annot</span>, by <span class="op">=</span> <span class="st">"sample"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">consensusClass</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
 <colgroup>
 <col width="2%">
 <col width="1%">
@@ -784,167 +825,206 @@
 </tr>
 </tbody>
 </table>
-<p>One of the additional features we unlock is using <code>grouping</code> with <code>group_by</code> to make semi-supervised heatmaps. In this case, we need to say which column contains the IDs that will be the <em>columns</em> of the heatmap (in this case, <code>colv = 'sample'</code>), and what are the columns we want to plot as <em>rows</em> (<code>rowv = genes</code>). Other parameters here are graphical, for demonstration:</p>
+<p>One of the additional features we unlock is using
+<code>grouping</code> with <code>group_by</code> to make semi-supervised
+heatmaps. In this case, we need to say which column contains the IDs
+that will be the <em>columns</em> of the heatmap (in this case,
+<code>colv = 'sample'</code>), and what are the columns we want to plot
+as <em>rows</em> (<code>rowv = genes</code>). Other parameters here are
+graphical, for demonstration:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gr_gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggheatmap.html">ggheatmap</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span>,
-    colv <span class="op">=</span> <span class="st">"sample"</span>,
-    rowv <span class="op">=</span> <span class="va">genes</span>,
-    hm_colors <span class="op">=</span> <span class="st">'RdBu'</span>,
-    hm_color_values <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html">rescale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>,<span class="op">-</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="op">-</span><span class="fl">0.25</span>,<span class="fl">0</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>,
-    scale <span class="op">=</span> <span class="cn">TRUE</span>,
-    center <span class="op">=</span> <span class="cn">TRUE</span>,
-    show_dend_row <span class="op">=</span> <span class="cn">FALSE</span>,
-    show_colnames <span class="op">=</span> <span class="cn">FALSE</span>,
-    show_rownames <span class="op">=</span> <span class="cn">FALSE</span>,
-    group_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`Ba/Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, LumP <span class="op">=</span> <span class="st">"#06d6a0"</span>, LumU <span class="op">=</span> <span class="st">"#009fb7"</span>,
-                     `Stroma-rich` <span class="op">=</span> <span class="st">"#f9c80e"</span>, `NE-like` <span class="op">=</span> <span class="st">"#7d5ba6"</span><span class="op">)</span>,
-    colors_title <span class="op">=</span> <span class="st">"Scaled expression (log2 UQ)"</span><span class="op">)</span>
-
-<span class="va">gr_gghm</span> <span class="op">+</span>
-  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">gr_gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggheatmap.html">ggheatmap</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span>,</span>
+<span>    colv <span class="op">=</span> <span class="st">"sample"</span>,</span>
+<span>    rowv <span class="op">=</span> <span class="va">genes</span>,</span>
+<span>    hm_colors <span class="op">=</span> <span class="st">'RdBu'</span>,</span>
+<span>    hm_color_values <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>,<span class="op">-</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="op">-</span><span class="fl">0.25</span>,<span class="fl">0</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    center <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    show_dend_row <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    show_colnames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    show_rownames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    group_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Ba/Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, LumP <span class="op">=</span> <span class="st">"#06d6a0"</span>, LumU <span class="op">=</span> <span class="st">"#009fb7"</span>,</span>
+<span>                     `Stroma-rich` <span class="op">=</span> <span class="st">"#f9c80e"</span>, `NE-like` <span class="op">=</span> <span class="st">"#7d5ba6"</span><span class="op">)</span>,</span>
+<span>    colors_title <span class="op">=</span> <span class="st">"Scaled expression (log2 UQ)"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">gr_gghm</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-5-1.png" width="720"></p>
-<p>Here, we can see that the heatmap is clustered in a semi-supervised manner (by <code>consensusClass</code>). It also enables <code>add_tracks</code>:</p>
-<div id="adding-tracks" class="section level2">
-<h2 class="hasAnchor">
-<a href="#adding-tracks" class="anchor"></a>Adding tracks</h2>
-<p>You can <code>add_tracks</code> for variables that were in the original table fed to <code>ggheatmap</code>. You can see what variables are available using <code>get_data</code>:</p>
+<p>Here, we can see that the heatmap is clustered in a semi-supervised
+manner (by <code>consensusClass</code>). It also enables
+<code>add_tracks</code>:</p>
+<div class="section level3">
+<h3 id="adding-tracks">Adding tracks<a class="anchor" aria-label="anchor" href="#adding-tracks"></a>
+</h3>
+<p>You can <code>add_tracks</code> for variables that were in the
+original table fed to <code>ggheatmap</code>. You can see what variables
+are available using <code>get_data</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/get_data.html">get_data</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt;  [1] "observations"    "FBP1"            "ACER2"           "PKHD1"          </span>
-<span class="co">#&gt;  [5] "CAPN5"           "S100P"           "TMEM51"          "DHRS2"          </span>
-<span class="co">#&gt;  [9] "CYP4F22"         "SPINK1"          "ACSL5"           "ST3GAL5"        </span>
-<span class="co">#&gt; [13] "TBX3"            "HPGD"            "TGFBR3"          "FAM3B"          </span>
-<span class="co">#&gt; [17] "ATP8B1"          "RNF128"          "SNCG"            "SLC44A3"        </span>
-<span class="co">#&gt; [21] "GATA3"           "PPARG"           "ICA1"            "GGT6"           </span>
-<span class="co">#&gt; [25] "RAB11A"          "TRAK1"           "VSIG2"           "BCAS1"          </span>
-<span class="co">#&gt; [29] "RAB15"           "FAM174B"         "SLC29A3"         "FOXA1"          </span>
-<span class="co">#&gt; [33] "GOLT1A"          "PPFIBP2"         "DENND2D"         "ACAA1"          </span>
-<span class="co">#&gt; [37] "DNAJA4"          "HMGCS2"          "CYP2J2"          "VSNL1"          </span>
-<span class="co">#&gt; [41] "KRT14"           "TGM1"            "SERPINB4"        "GSDMC"          </span>
-<span class="co">#&gt; [45] "KRT6A"           "LGALS7"          "SFN"             "SPRR2A"         </span>
-<span class="co">#&gt; [49] "C12orf54"        "SPRR2D"          "HOXD11"          "KRT6C"          </span>
-<span class="co">#&gt; [53] "KRT5"            "DSG3"            "KRT6B"           "HOXD10"         </span>
-<span class="co">#&gt; [57] "IL20RB"          "RHCG"            "AHNAK2"          "SPRR2F"         </span>
-<span class="co">#&gt; [61] "FGFBP1"          "sex"             "age"             "stage"          </span>
-<span class="co">#&gt; [65] "node"            "metastasis"      "papillary"       "squamous"       </span>
-<span class="co">#&gt; [69] "neuroendocrine"  "plasmacytoid"    "consensusClass"  "cor_pval"       </span>
-<span class="co">#&gt; [73] "separationLevel" "LumP"            "LumNS"           "LumU"           </span>
-<span class="co">#&gt; [77] "Stroma.rich"     "Ba.Sq"           "NE.like"</span></code></pre></div>
-<p><code>observations</code> will always be your ID variable, which is a factor ordered in the same way as the heatmap, to ease making new plots that will be perfectly aligned. Here, we’ll add some clinical tracks:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_data.html">get_data</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "observations"    "FBP1"            "ACER2"           "PKHD1"          </span></span>
+<span><span class="co">#&gt;  [5] "CAPN5"           "S100P"           "TMEM51"          "DHRS2"          </span></span>
+<span><span class="co">#&gt;  [9] "CYP4F22"         "SPINK1"          "ACSL5"           "ST3GAL5"        </span></span>
+<span><span class="co">#&gt; [13] "TBX3"            "HPGD"            "TGFBR3"          "FAM3B"          </span></span>
+<span><span class="co">#&gt; [17] "ATP8B1"          "RNF128"          "SNCG"            "SLC44A3"        </span></span>
+<span><span class="co">#&gt; [21] "GATA3"           "PPARG"           "ICA1"            "GGT6"           </span></span>
+<span><span class="co">#&gt; [25] "RAB11A"          "TRAK1"           "VSIG2"           "BCAS1"          </span></span>
+<span><span class="co">#&gt; [29] "RAB15"           "FAM174B"         "SLC29A3"         "FOXA1"          </span></span>
+<span><span class="co">#&gt; [33] "GOLT1A"          "PPFIBP2"         "DENND2D"         "ACAA1"          </span></span>
+<span><span class="co">#&gt; [37] "DNAJA4"          "HMGCS2"          "CYP2J2"          "VSNL1"          </span></span>
+<span><span class="co">#&gt; [41] "KRT14"           "TGM1"            "SERPINB4"        "GSDMC"          </span></span>
+<span><span class="co">#&gt; [45] "KRT6A"           "LGALS7"          "SFN"             "SPRR2A"         </span></span>
+<span><span class="co">#&gt; [49] "C12orf54"        "SPRR2D"          "HOXD11"          "KRT6C"          </span></span>
+<span><span class="co">#&gt; [53] "KRT5"            "DSG3"            "KRT6B"           "HOXD10"         </span></span>
+<span><span class="co">#&gt; [57] "IL20RB"          "RHCG"            "AHNAK2"          "SPRR2F"         </span></span>
+<span><span class="co">#&gt; [61] "FGFBP1"          "sex"             "age"             "stage"          </span></span>
+<span><span class="co">#&gt; [65] "node"            "metastasis"      "papillary"       "squamous"       </span></span>
+<span><span class="co">#&gt; [69] "neuroendocrine"  "plasmacytoid"    "consensusClass"  "cor_pval"       </span></span>
+<span><span class="co">#&gt; [73] "separationLevel" "LumP"            "LumNS"           "LumU"           </span></span>
+<span><span class="co">#&gt; [77] "Stroma.rich"     "Ba.Sq"           "NE.like"</span></span></code></pre></div>
+<p><code>observations</code> will always be your ID variable, which is a
+factor ordered in the same way as the heatmap, to ease making new plots
+that will be perfectly aligned. Here, we’ll add some clinical
+tracks:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gr_gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_tracks.html">add_tracks</a></span><span class="op">(</span><span class="va">gr_gghm</span>,
-           track_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"stage"</span>, <span class="st">"node"</span>, <span class="st">"metastasis"</span><span class="op">)</span>,
-           track_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>stage <span class="op">=</span> <span class="st">'Greys'</span>, node <span class="op">=</span> <span class="st">'Oranges'</span>, metastasis <span class="op">=</span> <span class="st">'Reds'</span><span class="op">)</span>,
-           track_prop <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>
-<span class="co">#&gt; Adding missing grouping variables: `consensusClass`</span>
-<span class="va">gr_gghm</span> <span class="op">+</span>
-  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">gr_gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_tracks.html">add_tracks</a></span><span class="op">(</span><span class="va">gr_gghm</span>,</span>
+<span>           track_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stage"</span>, <span class="st">"node"</span>, <span class="st">"metastasis"</span><span class="op">)</span>,</span>
+<span>           track_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stage <span class="op">=</span> <span class="st">'Greys'</span>, node <span class="op">=</span> <span class="st">'Oranges'</span>, metastasis <span class="op">=</span> <span class="st">'Reds'</span><span class="op">)</span>,</span>
+<span>           track_prop <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Adding missing grouping variables: `consensusClass`</span></span>
+<span><span class="va">gr_gghm</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-7-1.png" width="768"></p>
 </div>
-<div id="aligning-new-plots" class="section level2">
-<h2 class="hasAnchor">
-<a href="#aligning-new-plots" class="anchor"></a>Aligning new plots</h2>
-<p>Here we’ll make two different plots: one to align with the samples (columns) and another to align with the genes (rows). We can get the data from get_data, which is a good idea to facilitate further plotting because it will ensure your observations will be in the correct order. Then, here, we make a line-plot with the correlations of each sample to the centroid of the 6 consensus bladder cancer subtypes. Note the use of <code>theme_quant</code>, one of our suggested themes that look nice with <code>ggheatmap</code>s, and that we switch the y-axis to the right side to make the end-product look better (though everything will work without this):</p>
+<div class="section level3">
+<h3 id="aligning-new-plots">Aligning new plots<a class="anchor" aria-label="anchor" href="#aligning-new-plots"></a>
+</h3>
+<p>Here we’ll make two different plots: one to align with the samples
+(columns) and another to align with the genes (rows). We can get the
+data from get_data, which is a good idea to facilitate further plotting
+because it will ensure your observations will be in the correct order.
+Then, here, we make a line-plot with the correlations of each sample to
+the centroid of the 6 consensus bladder cancer subtypes. Note the use of
+<code>theme_quant</code>, one of our suggested themes that look nice
+with <code>ggheatmap</code>s, and that we switch the y-axis to the right
+side to make the end-product look better (though everything will work
+without this):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tcgaBLCA_tb2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_data.html">get_data</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span>
-<span class="va">plt_corlines</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_tb2</span> <span class="op">%&gt;%</span>
-  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">select</span><span class="op">(</span><span class="va">observations</span>, <span class="va">LumP</span><span class="op">:</span><span class="va">NE.like</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">pivot_longer</span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="va">observations</span>, names_to <span class="op">=</span> <span class="st">"subtype"</span>, values_to <span class="op">=</span> <span class="st">"cor"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">observations</span>, <span class="va">cor</span>, color <span class="op">=</span> <span class="va">subtype</span>, group <span class="op">=</span> <span class="va">subtype</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_y_continuous</span><span class="op">(</span>position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`Ba.Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, LumP <span class="op">=</span> <span class="st">"#06d6a0"</span>, LumU <span class="op">=</span> <span class="st">"#009fb7"</span>,
-                                `Stroma.rich` <span class="op">=</span> <span class="st">"#f9c80e"</span>, `NE.like` <span class="op">=</span> <span class="st">"#7d5ba6"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">guides</span><span class="op">(</span>color <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Correlation\n to centroid"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../reference/theme_sparse.html">theme_quant</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
-<span class="co">#&gt; "none")` instead.</span>
-<span class="va">plt_corlines</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tcgaBLCA_tb2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_data.html">get_data</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span></span>
+<span><span class="va">plt_corlines</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_tb2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">observations</span>, <span class="va">LumP</span><span class="op">:</span><span class="va">NE.like</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="op">-</span><span class="va">observations</span>, names_to <span class="op">=</span> <span class="st">"subtype"</span>, values_to <span class="op">=</span> <span class="st">"cor"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">observations</span>, <span class="va">cor</span>, color <span class="op">=</span> <span class="va">subtype</span>, group <span class="op">=</span> <span class="va">subtype</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Ba.Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, LumP <span class="op">=</span> <span class="st">"#06d6a0"</span>, LumU <span class="op">=</span> <span class="st">"#009fb7"</span>,</span>
+<span>                                `Stroma.rich` <span class="op">=</span> <span class="st">"#f9c80e"</span>, `NE.like` <span class="op">=</span> <span class="st">"#7d5ba6"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Correlation\n to centroid"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_sparse.html">theme_quant</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The `&lt;scale&gt;` argument of `guides()` cannot be `FALSE`. Use "none" instead as</span></span>
+<span><span class="co">#&gt; of ggplot2 3.3.4.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
+<span><span class="va">plt_corlines</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-8-1.png" width="480"></p>
-<p>The second plot should align to the rows. We can’t just use the <code>get_data</code> because it doesn’t contain the information to order our rows, but we can get this from <code>get_rowLevels</code>. Here, we plot which signature each gene in our example data belongs to:</p>
+<p>The second plot should align to the rows. We can’t just use the
+<code>get_data</code> because it doesn’t contain the information to
+order our rows, but we can get this from <code>get_rowLevels</code>.
+Here, we plot which signature each gene in our example data belongs
+to:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">plt_row_annot</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span> <span class="op">%&gt;%</span>
-  <span class="fu">mutate</span><span class="op">(</span>gene_symbol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">gene_symbol</span>, levels <span class="op">=</span> <span class="fu"><a href="../reference/get_data.html">get_rowLevels</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span><span class="op">)</span>,
-         group <span class="op">=</span> <span class="st">'signature'</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">gene_symbol</span>, <span class="va">group</span>, fill <span class="op">=</span> <span class="va">signature</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_tile</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">coord_flip</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../reference/theme_sparse.html">theme_sparse2</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">plt_row_annot</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">plt_row_annot</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>gene_symbol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gene_symbol</span>, levels <span class="op">=</span> <span class="fu"><a href="../reference/get_data.html">get_rowLevels</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>         group <span class="op">=</span> <span class="st">'signature'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">gene_symbol</span>, <span class="va">group</span>, fill <span class="op">=</span> <span class="va">signature</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_sparse.html">theme_sparse2</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">plt_row_annot</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-9-1.png" width="288"></p>
-<p>Finally, we can use <code>align_to_hm</code> to add these plots to the original hm with all panels properly aligned. Note the use of <code>legend_action = 'collect'</code> in the final call, that will unite all the legends in a nice way:</p>
+<p>Finally, we can use <code>align_to_hm</code> to add these plots to
+the original hm with all panels properly aligned. Note the use of
+<code>legend_action = 'collect'</code> in the final call, that will
+unite all the legends in a nice way:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gghm_complete</span> <span class="op">&lt;-</span> <span class="va">gr_gghm</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/align_to_hm.html">align_to_hm</a></span><span class="op">(</span><span class="va">plt_corlines</span>, newplt_size_prop <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/align_to_hm.html">align_to_hm</a></span><span class="op">(</span><span class="va">plt_row_annot</span>, pos <span class="op">=</span> <span class="st">"left"</span>, newplt_size_prop <span class="op">=</span> <span class="fl">0.08</span>, 
-              legend_action <span class="op">=</span> <span class="st">"collect"</span>, tag_level <span class="op">=</span> <span class="st">'keep'</span><span class="op">)</span>
-<span class="va">gghm_complete</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">gghm_complete</span> <span class="op">&lt;-</span> <span class="va">gr_gghm</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/align_to_hm.html">align_to_hm</a></span><span class="op">(</span><span class="va">plt_corlines</span>, newplt_size_prop <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/align_to_hm.html">align_to_hm</a></span><span class="op">(</span><span class="va">plt_row_annot</span>, pos <span class="op">=</span> <span class="st">"left"</span>, newplt_size_prop <span class="op">=</span> <span class="fl">0.08</span>, </span>
+<span>              legend_action <span class="op">=</span> <span class="st">"collect"</span>, tag_level <span class="op">=</span> <span class="st">'keep'</span><span class="op">)</span></span>
+<span><span class="va">gghm_complete</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-10-1.png" width="816"></p>
-<p>Note that you can still use the <code>patchwork</code> <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code> to make global changes to all plots:</p>
+<p>Note that you can still use the <code>patchwork</code>
+<code>&amp;</code> to make global changes to all plots:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gghm_complete</span> <span class="op">&lt;-</span> <span class="va">gghm_complete</span> <span class="op">&amp;</span>
-  <span class="fu">theme</span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,
-        legend.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span>
-<span class="va">gghm_complete</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">gghm_complete</span> <span class="op">&lt;-</span> <span class="va">gghm_complete</span> <span class="op">&amp;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,</span>
+<span>        legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">gghm_complete</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-11-1.png" width="768"></p>
 </div>
 </div>
-<div id="creating-panels" class="section level1">
-<h1 class="hasAnchor">
-<a href="#creating-panels" class="anchor"></a>Creating panels</h1>
-<p>You can now make panels with your complete heatmap with <code>patchwork</code>, <code>cowplot</code> or other aligning packages. For example:</p>
+<div class="section level2">
+<h2 id="creating-panels">Creating panels<a class="anchor" aria-label="anchor" href="#creating-panels"></a>
+</h2>
+<p>You can now make panels with your complete heatmap with
+<code>patchwork</code>, <code>cowplot</code> or other aligning packages.
+For example:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">plt_subtype_count</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">sample_annot</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">consensusClass</span>, fill <span class="op">=</span> <span class="va">consensusClass</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_bar</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`Ba/Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, 
-                               LumP <span class="op">=</span> <span class="st">"#06d6a0"</span>, LumU <span class="op">=</span> <span class="st">"#009fb7"</span>,
-                                `Stroma-rich` <span class="op">=</span> <span class="st">"#f9c80e"</span>, 
-                               `NE-like` <span class="op">=</span> <span class="st">"#7d5ba6"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">'Number of samples'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">guides</span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="../reference/theme_sparse.html">theme_quant</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">theme</span><span class="op">(</span>axis.ticks.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>,
-        axis.text.x <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span>, angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span>, vjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
-<span class="co">#&gt; "none")` instead.</span>
-<span class="va">plt_subtype_count</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">plt_subtype_count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sample_annot</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">consensusClass</span>, fill <span class="op">=</span> <span class="va">consensusClass</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Ba/Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, </span>
+<span>                               LumP <span class="op">=</span> <span class="st">"#06d6a0"</span>, LumU <span class="op">=</span> <span class="st">"#009fb7"</span>,</span>
+<span>                                `Stroma-rich` <span class="op">=</span> <span class="st">"#f9c80e"</span>, </span>
+<span>                               `NE-like` <span class="op">=</span> <span class="st">"#7d5ba6"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">'Number of samples'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_sparse.html">theme_quant</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.ticks.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>,</span>
+<span>        axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span>, angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span>, vjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">plt_subtype_count</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-12-1.png" width="384"></p>
-<p>Then, we can just use standard <code>patchwork</code> to align the <code>ggheatmap</code> and our new plots (as they won’t be aligned with the heatmap part of the plot, but with the entire plot):</p>
+<p>Then, we can just use standard <code>patchwork</code> to align the
+<code>ggheatmap</code> and our new plots (as they won’t be aligned with
+the heatmap part of the plot, but with the entire plot):</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>
-<span class="va">new_col</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">plt_subtype_count</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_spacer.html">plot_spacer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.3</span>,<span class="fl">0.7</span><span class="op">)</span><span class="op">)</span>
-
-<span class="op">(</span><span class="va">new_col</span> <span class="op">|</span> <span class="va">gghm_complete</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.4</span>,<span class="fl">0.6</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<span><span class="va">new_col</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">plt_subtype_count</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_spacer.html" class="external-link">plot_spacer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>,<span class="fl">0.7</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">(</span><span class="va">new_col</span> <span class="op">|</span> <span class="va">gghm_complete</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.4</span>,<span class="fl">0.6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-13-1.png" width="1152"></p>
 </div>
-<div id="row-facetting" class="section level1">
-<h1 class="hasAnchor">
-<a href="#row-facetting" class="anchor"></a>Row facetting</h1>
-<p>As of ggheatmapper 0.1.2, we’ve added row facetting options using the <code>rowv</code> parameter. ggheatmapper will render parts of the heatmap in different facets if the <code>rowv</code> argument for the <code>ggheatmap</code> call is a named list:</p>
+<div class="section level2">
+<h2 id="row-facetting">Row facetting<a class="anchor" aria-label="anchor" href="#row-facetting"></a>
+</h2>
+<p>As of ggheatmapper 0.1.2, we’ve added row facetting options using the
+<code>rowv</code> parameter. ggheatmapper will render parts of the
+heatmap in different facets if the <code>rowv</code> argument for the
+<code>ggheatmap</code> call is a named list:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sig_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op">(</span><span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span><span class="op">$</span><span class="va">gene_symbol</span>, <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span><span class="op">$</span><span class="va">signature</span><span class="op">)</span>
-
-<span class="va">gr_gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggheatmap.html">ggheatmap</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span>,
-    colv <span class="op">=</span> <span class="st">"sample"</span>,
-    rowv <span class="op">=</span> <span class="va">sig_list</span>,
-    hm_colors <span class="op">=</span> <span class="st">'RdBu'</span>,
-    hm_color_values <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html">rescale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>,<span class="op">-</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="op">-</span><span class="fl">0.25</span>,<span class="fl">0</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>,
-    scale <span class="op">=</span> <span class="cn">TRUE</span>,
-    center <span class="op">=</span> <span class="cn">TRUE</span>,
-    show_dend_row <span class="op">=</span> <span class="cn">FALSE</span>,
-    show_colnames <span class="op">=</span> <span class="cn">FALSE</span>,
-    show_rownames <span class="op">=</span> <span class="cn">FALSE</span>,
-    group_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`Ba/Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, LumP <span class="op">=</span> <span class="st">"#06d6a0"</span>, LumU <span class="op">=</span> <span class="st">"#009fb7"</span>,
-                     `Stroma-rich` <span class="op">=</span> <span class="st">"#f9c80e"</span>, `NE-like` <span class="op">=</span> <span class="st">"#7d5ba6"</span><span class="op">)</span>,
-    colors_title <span class="op">=</span> <span class="st">"Scaled expression (log2 UQ)"</span><span class="op">)</span>
-
-<span class="va">gr_gghm</span> <span class="op">+</span>
-  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sig_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span><span class="op">$</span><span class="va">gene_symbol</span>, <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span><span class="op">$</span><span class="va">signature</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">gr_gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggheatmap.html">ggheatmap</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span>,</span>
+<span>    colv <span class="op">=</span> <span class="st">"sample"</span>,</span>
+<span>    rowv <span class="op">=</span> <span class="va">sig_list</span>,</span>
+<span>    hm_colors <span class="op">=</span> <span class="st">'RdBu'</span>,</span>
+<span>    hm_color_values <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html" class="external-link">rescale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>,<span class="op">-</span><span class="fl">2</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">0.5</span>,<span class="op">-</span><span class="fl">0.25</span>,<span class="fl">0</span>,<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">6</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    center <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    show_dend_row <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    show_colnames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    show_rownames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    group_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Ba/Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, LumP <span class="op">=</span> <span class="st">"#06d6a0"</span>, LumU <span class="op">=</span> <span class="st">"#009fb7"</span>,</span>
+<span>                     `Stroma-rich` <span class="op">=</span> <span class="st">"#f9c80e"</span>, `NE-like` <span class="op">=</span> <span class="st">"#7d5ba6"</span><span class="op">)</span>,</span>
+<span>    colors_title <span class="op">=</span> <span class="st">"Scaled expression (log2 UQ)"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">gr_gghm</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-14-1.png" width="720"></p>
 </div>
   </div>
@@ -960,11 +1040,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Clarice S. Groeneveld.</p>
+  <p></p>
+<p>Developed by Clarice S. Groeneveld.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -972,6 +1054,8 @@
 
   
 
+
+  
 
   </body>
 </html>

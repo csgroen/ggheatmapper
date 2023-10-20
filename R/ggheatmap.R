@@ -357,6 +357,7 @@ ggheatmap <- function(table,
     grline_data <- table %>%
         summarize(n = n()) %>%
         mutate(gr_pos = cumsum(n) + 0.5) %>%
+        ungroup() %>%
         dplyr::slice(-n())
     if(group_lines) {
         line_geom <- geom_vline(aes(xintercept = gr_pos),
@@ -397,13 +398,15 @@ ggheatmap <- function(table,
 #' scale_y_discrete scale_fill_manual
 .plot_hm_track <- function(table, pptable, group_colors, leg_ncol, fontsize,
                            show_rownames) {
+
     track_plot <- pptable %>%
-        select(observations, group_var = group_vars(table)) %>%
+        select(observations, group_vars(table)) %>%
         distinct() %>%
-        mutate(group = group_vars(table)) %>%
+        pivot_longer(cols = group_vars(table), names_to = "group", values_to = "group_var") %>%
+        mutate(group = factor(group, levels = rev(group_vars(table)))) %>%
         ggplot(aes(observations, group, fill = group_var)) +
         geom_raster() +
-        labs(fill = group_vars(table)) +
+        labs(fill = paste(group_vars(table), collapse = " | ")) +
         guides(fill = guide_legend(ncol = leg_ncol)) +
         .theme_track(fontsize)
 
@@ -464,6 +467,16 @@ ggheatmap <- function(table,
         if(grouped) {
             gr_var <- group_vars(table)
             gr_table <- pptable %>% select(observations, group = !! gr_var) %>% distinct()
+
+            if(ncol(gr_table) == 3) {
+                gr_table <- gr_table %>%
+                    rowwise() %>%
+                    mutate(group = paste0(group1, group2)) %>%
+                    arrange(group1)
+            } else if (ncol(gr_table) > 3) {
+                warning("For now, grouping using more than")
+            }
+
             groups <- split(gr_table$observations, gr_table$group)
             hcc_semi <- hclust_semisupervised(pp_mat, groups,
                                               dist_method = dist_method,
