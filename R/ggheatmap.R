@@ -355,11 +355,14 @@ ggheatmap <- function(table,
 .line_geom <- function(table, grouped, group_lines, group_line_color,
            group_lty, group_lwd) {
     grline_data <- table %>%
+        ungroup() %>%
+        group_by(!! sym(group_vars(table)[1])) %>%
         summarize(n = n()) %>%
         mutate(gr_pos = cumsum(n) + 0.5) %>%
         ungroup() %>%
         dplyr::slice(-n())
     if(group_lines) {
+        if(length(group_vars(table)) > 1) warning("Adding group line for first grouping variable...")
         line_geom <- geom_vline(aes(xintercept = gr_pos),
                                 lty = group_lty, color = group_line_color,
                                 size = group_lwd,
@@ -471,10 +474,11 @@ ggheatmap <- function(table,
             if(ncol(gr_table) == 3) {
                 gr_table <- gr_table %>%
                     rowwise() %>%
-                    mutate(group = paste0(group1, group2)) %>%
+                    mutate(group = paste0(group1, group2),
+                           group = factor(group, levels = paste0(rep(levels(gr_table$group1), each = 2), levels(gr_table$group2)))) %>%
                     arrange(group1)
             } else if (ncol(gr_table) > 3) {
-                warning("For now, grouping using more than")
+                warning("For now, grouping using more than 2 variables is not supported")
             }
 
             groups <- split(gr_table$observations, gr_table$group)
