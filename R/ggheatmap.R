@@ -288,8 +288,8 @@ ggheatmap <- function(table,
 # Plots
 #' @importFrom tibble tibble
 #' @importFrom dplyr left_join
-#' @importFrom ggplot2 ggplot aes facet_grid geom_raster geom_tile scale_fill_distiller
-#' scale_fill_gradientn guides guide_colorbar theme
+#' @importFrom ggplot2 ggplot aes facet_grid geom_raster geom_tile scale_fill_distiller scale_fill_gradientn guides guide_colorbar theme
+#' @importFrom scales squish
 .plot_ggheatmap <- function(pptable, hm_colors, breaks,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, color_values, raster,
@@ -354,14 +354,14 @@ ggheatmap <- function(table,
 #' @importFrom dplyr summarize mutate slice n
 .line_geom <- function(table, grouped, group_lines, group_line_color,
            group_lty, group_lwd) {
-    grline_data <- table %>%
-        ungroup() %>%
-        group_by(!! sym(group_vars(table)[1])) %>%
-        summarize(n = n()) %>%
-        mutate(gr_pos = cumsum(n) + 0.5) %>%
-        ungroup() %>%
-        dplyr::slice(-n())
-    if(group_lines) {
+    if(grouped & group_lines) {
+        grline_data <- table %>%
+            ungroup() %>%
+            group_by(!! sym(group_vars(table)[1])) %>%
+            summarize(n = n()) %>%
+            mutate(gr_pos = cumsum(n) + 0.5) %>%
+            ungroup() %>%
+            dplyr::slice(-n())
         if(length(group_vars(table)) > 1) warning("Adding group line for first grouping variable...")
         line_geom <- geom_vline(aes(xintercept = gr_pos),
                                 lty = group_lty, color = group_line_color,
