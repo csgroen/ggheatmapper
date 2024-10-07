@@ -83,6 +83,12 @@ align_to_hm <- function(gghm, gplot,
                            widths = params$widths,
                            heights = params$heights,
                            guides = legend_action)
+    bug_check <- try(print(new_gghm), silent = TRUE)
+    if(class(bug_check) == "try-error") {
+        new_gghm <- wrap_plots(plots, design = new_design,
+                               widths = params$widths,
+                               heights = params$heights)
+    }
 
     #-- Update params
     class(new_gghm) <- append(class(new_gghm), "ggheatmap")
