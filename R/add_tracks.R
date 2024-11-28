@@ -40,7 +40,7 @@ add_tracks <- function(gghm,
                        legend_action = "collect",
                        show_legend = TRUE) {
     ppdf <- gghm$data %>%
-        select(observations, {{ track_columns }})
+        select(observations, any_of(track_columns))
 
     #-- Identify column types
     col_cls <- sapply(ppdf, class)[-1]
@@ -110,7 +110,7 @@ add_matrix_track <- function(gghm,
     #-- Get data
     ppdf <- gghm$data %>%
         ungroup() %>%
-        select(observations, {{ track_columns }})
+        select(observations, any_of(track_columns))
 
 
     #-- Get plot
