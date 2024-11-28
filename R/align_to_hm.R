@@ -84,7 +84,7 @@ align_to_hm <- function(gghm, gplot,
                            heights = params$heights,
                            guides = legend_action)
     bug_check <- try(print(new_gghm), silent = TRUE)
-    if(class(bug_check) == "try-error") {
+    if("try-error" %in% class(bug_check)) {
         new_gghm <- wrap_plots(plots, design = new_design,
                                widths = params$widths,
                                heights = params$heights)
