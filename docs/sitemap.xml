@@ -1,63 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/ggheatmap.html</loc>
-  </url>
-  <url>
-    <loc>/articles/ggheatmapper.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_matrix_track.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_tracks.html</loc>
-  </url>
-  <url>
-    <loc>/reference/align_to_hm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/annotate_gghm.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_hmPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ggheatmap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/gghmData.html</loc>
-  </url>
-  <url>
-    <loc>/reference/gghm_Data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/gghm_getHMplot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/hclust_semisupervised.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/tcgaBLCA_ex.html</loc>
-  </url>
-  <url>
-    <loc>/reference/theme_sparse.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/articles/ggheatmap.html</loc></url>
+<url><loc>/articles/ggheatmapper.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/add_matrix_track.html</loc></url>
+<url><loc>/reference/add_tracks.html</loc></url>
+<url><loc>/reference/align_heatmaps.html</loc></url>
+<url><loc>/reference/align_to_hm.html</loc></url>
+<url><loc>/reference/annotate_gghm.html</loc></url>
+<url><loc>/reference/get_data.html</loc></url>
+<url><loc>/reference/get_hmPlot.html</loc></url>
+<url><loc>/reference/ggheatmap.html</loc></url>
+<url><loc>/reference/gghm_Data.html</loc></url>
+<url><loc>/reference/gghm_getHMplot.html</loc></url>
+<url><loc>/reference/hclust_semisupervised.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/tcgaBLCA_ex.html</loc></url>
+<url><loc>/reference/theme_sparse.html</loc></url>
 </urlset>
+
