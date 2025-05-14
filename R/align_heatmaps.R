@@ -52,38 +52,37 @@ align_heatmaps <- function(hm1, hm2, pos = 'horizontal', legend_action = NULL, t
             design_rows <- paste0(lines, "#", to_add)
             design_rows[length(design_rows)] <- paste0(lines[length(lines)], paste(the_end, collapse = ""))
             new_design <- paste(design_rows, collapse = "\n")
+
+            # Générer le nouveau plot
+            new_hm <- wrap_plots(plots, design = new_design,
+                                 widths = widths,
+                                 heights = height,
+                                 guides = "collect")
+
+
+            # Vérification pour s'assurer que le plot s'affiche correctement
+            bug_check <- try(invisible(capture.output(print(new_hm))), silent = TRUE)
+            if ("try-error" %in% class(bug_check)) {
+                new_hm <- wrap_plots(new_hm, design = new_design,
+                                     widths = widths,
+                                     heights = hm1$gghm$heights)
+            }
+            #-- Update params
+
+            class(new_hm) <- append(class(new_hm), "ggheatmap")
+            new_hm$data <- hm1$data
+            new_hm$gghm <- list(plots = plots,
+                                params = params,
+                                design = new_design,
+                                row_levels = hm1$gghm$row_levels,
+                                col_levels = hm1$gghm$col_levels,
+                                line_geom = hm1$gghm$line_geom,
+                                hclust = hm1$gghm$hclust)
         } else {
             stop("The row names must be the same.")
         }
     } else {
-        stop("The position of the heatmaps must be 'horizontal'")
+        new_hm <- align_to_hm(hm1, hm2)
     }
-
-    # Générer le nouveau plot
-    new_hm <- wrap_plots(plots, design = new_design,
-                              widths = widths,
-                              heights = height,
-                              guides = "collect")
-
-
-    # Vérification pour s'assurer que le plot s'affiche correctement
-    bug_check <- try(invisible(capture.output(print(new_hm))), silent = TRUE)
-    if ("try-error" %in% class(bug_check)) {
-        new_hm <- wrap_plots(new_hm, design = new_design,
-                             widths = widths,
-                             heights = hm1$gghm$heights)
-    }
-
-    #-- Update params
-
-    class(new_hm) <- append(class(new_hm), "ggheatmap")
-    new_hm$data <- hm1$data
-    new_hm$gghm <- list(plots = plots,
-                          params = params,
-                          design = new_design,
-                          row_levels = hm1$gghm$row_levels,
-                          col_levels = hm1$gghm$col_levels,
-                          line_geom = hm1$gghm$line_geom,
-                          hclust = hm1$gghm$hclust)
     return(new_hm)
 }
