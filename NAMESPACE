@@ -3,6 +3,7 @@
 export(.pal_collection)
 export(add_matrix_track)
 export(add_tracks)
+export(align_heatmaps)
 export(align_to_hm)
 export(annotate_gghm)
 export(get_colLevels)
