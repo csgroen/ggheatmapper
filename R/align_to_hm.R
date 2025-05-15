@@ -26,7 +26,7 @@
 align_to_hm <- function(gghm, gplot,
                         pos = "bottom",
                         newplt_size_prop = 0.5,
-                        legend_action = "collect",
+                        legend_action = NULL,
                         tag_level = 'new') {
     if(! "ggheatmap" %in% class(gghm)) {
         stop("`gghm` must be of class `ggheatmap`.")

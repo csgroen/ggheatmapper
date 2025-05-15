@@ -16,12 +16,12 @@ align_heatmaps(
 \item{hm1}{first heatmap}
 
 \item{hm2}{second heatmap
-(if \code{pos='top'} or \code{pos='bottom'}) or rows (if \code{pos='left'}) with the heatmap.
+(if pos='top' or pos='bottom') or rows (if pos='left') with the heatmap.
 Note: to create the gplot, make sure you use \code{\link[=gghmData]{gghmData()}} to get the data, or
 alternatively \code{\link[=get_rowLevels]{get_rowLevels()}} or \code{\link[=get_colLevels]{get_colLevels()}}.}
 
 \item{pos}{'vertical' or 'horizontal', by default the best option.
-of the height (if \code{pos='top'} or \code{pos='bottom'}) or width (if \code{pos='left'}) that
+of the height (if pos='top' or pos='bottom') or width (if pos='left') that
 the new plot will occupy in the panel.}
 
 \item{legend_action}{A string specifying how guides should be treated in the layout.
@@ -31,7 +31,7 @@ See: guides in \code{\link[patchwork:plot_layout]{patchwork::plot_layout()}}.}
 See \link[patchwork:plot_annotation]{patchwork::plot_annotation}.}
 }
 \value{
-A joined panel object of class \code{ggheatmap}.
+A joined panel object of class ggheatmap.
 }
 \description{
 Align a ggheatmap object to another ggplot that shares either its columns or
