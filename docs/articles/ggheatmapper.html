@@ -859,10 +859,12 @@ tracks:</p>
 <span>           track_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stage"</span>, <span class="st">"node"</span>, <span class="st">"metastasis"</span><span class="op">)</span>,</span>
 <span>           track_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>stage <span class="op">=</span> <span class="st">'Greys'</span>, node <span class="op">=</span> <span class="st">'Oranges'</span>, metastasis <span class="op">=</span> <span class="st">'Reds'</span><span class="op">)</span>,</span>
 <span>           track_prop <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Adding missing grouping variables: `consensusClass`</span></span>
-<span><span class="va">gr_gghm</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; Adding missing grouping variables: `consensusClass`</span></span></code></pre></div>
 <p><img src="ggheatmapper_files/figure-html/unnamed-chunk-7-1.png" width="768"></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gr_gghm</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-7-2.png" width="768"></p>
 </div>
 <div class="section level3">
 <h3 id="aligning-new-plots">Aligning new plots<a class="anchor" aria-label="anchor" href="#aligning-new-plots"></a>
@@ -877,7 +879,7 @@ the centroid of the 6 consensus bladder cancer subtypes. Note the use of
 with <code>ggheatmap</code>s, and that we switch the y-axis to the right
 side to make the end-product look better (though everything will work
 without this):</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tcgaBLCA_tb2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_data.html">get_data</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span></span>
 <span><span class="va">plt_corlines</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_tb2</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -903,7 +905,7 @@ without this):</p>
 order our rows, but we can get this from <code>get_rowLevels</code>.
 Here, we plot which signature each gene in our example data belongs
 to:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plt_row_annot</span> <span class="op">&lt;-</span> <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>gene_symbol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gene_symbol</span>, levels <span class="op">=</span> <span class="fu"><a href="../reference/get_data.html">get_rowLevels</a></span><span class="op">(</span><span class="va">gr_gghm</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>         group <span class="op">=</span> <span class="st">'signature'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -918,16 +920,18 @@ to:</p>
 the original hm with all panels properly aligned. Note the use of
 <code>legend_action = 'collect'</code> in the final call, that will
 unite all the legends in a nice way:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gghm_complete</span> <span class="op">&lt;-</span> <span class="va">gr_gghm</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/align_to_hm.html">align_to_hm</a></span><span class="op">(</span><span class="va">plt_corlines</span>, newplt_size_prop <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/align_to_hm.html">align_to_hm</a></span><span class="op">(</span><span class="va">plt_row_annot</span>, pos <span class="op">=</span> <span class="st">"left"</span>, newplt_size_prop <span class="op">=</span> <span class="fl">0.08</span>, </span>
-<span>              legend_action <span class="op">=</span> <span class="st">"collect"</span>, tag_level <span class="op">=</span> <span class="st">'keep'</span><span class="op">)</span></span>
-<span><span class="va">gghm_complete</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-10-1.png" width="816"></p>
+<span>              legend_action <span class="op">=</span> <span class="st">"collect"</span>, tag_level <span class="op">=</span> <span class="st">'keep'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-10-1.png" width="816"><img src="ggheatmapper_files/figure-html/unnamed-chunk-10-2.png" width="816"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gghm_complete</span></span></code></pre></div>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-10-3.png" width="816"></p>
 <p>Note that you can still use the <code>patchwork</code>
 <code>&amp;</code> to make global changes to all plots:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gghm_complete</span> <span class="op">&lt;-</span> <span class="va">gghm_complete</span> <span class="op">&amp;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,</span>
 <span>        legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span>
@@ -941,7 +945,7 @@ unite all the legends in a nice way:</p>
 <p>You can now make panels with your complete heatmap with
 <code>patchwork</code>, <code>cowplot</code> or other aligning packages.
 For example:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plt_subtype_count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">sample_annot</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">consensusClass</span>, fill <span class="op">=</span> <span class="va">consensusClass</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`Ba/Sq` <span class="op">=</span> <span class="st">"#fe4a49"</span>, LumNS <span class="op">=</span> <span class="st">"#32837d"</span>, </span>
@@ -959,7 +963,7 @@ For example:</p>
 <p>Then, we can just use standard <code>patchwork</code> to align the
 <code>ggheatmap</code> and our new plots (as they won’t be aligned with
 the heatmap part of the plot, but with the entire plot):</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span><span class="va">new_col</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">plt_subtype_count</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_spacer.html" class="external-link">plot_spacer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>,<span class="fl">0.7</span><span class="op">)</span><span class="op">)</span></span>
@@ -975,7 +979,7 @@ the heatmap part of the plot, but with the entire plot):</p>
 <code>rowv</code> parameter. ggheatmapper will render parts of the
 heatmap in different facets if the <code>rowv</code> argument for the
 <code>ggheatmap</code> call is a named list:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sig_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span><span class="op">$</span><span class="va">gene_symbol</span>, <span class="va">tcgaBLCA_ex</span><span class="op">$</span><span class="va">gene_annot</span><span class="op">$</span><span class="va">signature</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">gr_gghm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ggheatmap.html">ggheatmap</a></span><span class="op">(</span><span class="va">tcgaBLCA_tb</span>,</span>

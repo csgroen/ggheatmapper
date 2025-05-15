@@ -54,7 +54,7 @@ align_heatmaps <- function(hm1, hm2, pos = 'horizontal', legend_action = NULL, t
             new_design <- paste(design_rows, collapse = "\n")
 
             # Générer le nouveau plot
-            new_hm <- wrap_plots(plots, design = new_design,
+            new_hm <- patchwork::wrap_plots(plots, design = new_design,
                                  widths = widths,
                                  heights = height,
                                  guides = "collect")
@@ -63,7 +63,7 @@ align_heatmaps <- function(hm1, hm2, pos = 'horizontal', legend_action = NULL, t
             # Vérification pour s'assurer que le plot s'affiche correctement
             bug_check <- try(invisible(capture.output(print(new_hm))), silent = TRUE)
             if ("try-error" %in% class(bug_check)) {
-                new_hm <- wrap_plots(new_hm, design = new_design,
+                new_hm <- patchwork::wrap_plots(new_hm, design = new_design,
                                      widths = widths,
                                      heights = hm1$gghm$heights)
             }

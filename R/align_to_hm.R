@@ -26,7 +26,7 @@
 align_to_hm <- function(gghm, gplot,
                         pos = "bottom",
                         newplt_size_prop = 0.5,
-                        legend_action = NULL,
+                        legend_action = "collect",
                         tag_level = 'new') {
     if(! "ggheatmap" %in% class(gghm)) {
         stop("`gghm` must be of class `ggheatmap`.")
@@ -79,13 +79,13 @@ align_to_hm <- function(gghm, gplot,
         new_design <- paste(design_rows, collapse = "\n")
     }
     #-- Re-assemble with new design
-    new_gghm <- wrap_plots(plots, design = new_design,
+    new_gghm <- patchwork::wrap_plots(plots, design = new_design,
                            widths = params$widths,
                            heights = params$heights,
                            guides = legend_action)
-    bug_check <- try(invisibile(capture.output(print(new_gghm))), silent = TRUE)
+    bug_check <- try(invisible(capture.output(print(new_gghm))), silent = TRUE)
     if("try-error" %in% class(bug_check)) {
-        new_gghm <- wrap_plots(plots, design = new_design,
+        new_gghm <- patchwork::wrap_plots(plots, design = new_design,
                                widths = params$widths,
                                heights = params$heights)
     }
