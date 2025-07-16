@@ -83,12 +83,12 @@ align_to_hm <- function(gghm, gplot,
                            widths = params$widths,
                            heights = params$heights,
                            guides = legend_action)
-    bug_check <- try(invisible(capture.output(print(new_gghm))), silent = TRUE)
-    if("try-error" %in% class(bug_check)) {
-        new_gghm <- patchwork::wrap_plots(plots, design = new_design,
-                               widths = params$widths,
-                               heights = params$heights)
-    }
+    # bug_check <- try(invisible(capture.output(print(new_gghm))), silent = TRUE)
+    # if("try-error" %in% class(bug_check)) {
+    #     new_gghm <- patchwork::wrap_plots(plots, design = new_design,
+    #                            widths = params$widths,
+    #                            heights = params$heights)
+    # }
 
     #-- Update params
     class(new_gghm) <- append(class(new_gghm), "ggheatmap")
@@ -101,6 +101,7 @@ align_to_hm <- function(gghm, gplot,
                           line_geom = gghm$gghm$line_geom,
                           hclust = gghm$gghm$hclust)
 
+    new_gghm <- new_gghm & theme(plot.margin = unit(c(0,0,0,0), "pt"))
 
     return(new_gghm)
 

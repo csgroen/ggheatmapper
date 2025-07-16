@@ -223,6 +223,10 @@ ggheatmap <- function(table,
     full_hm$gghm$line_geom <- line_geom
     full_hm$gghm$hclust <- cluster_obs
 
+    full_hm +
+        plot_layout(guides = "collect") &
+        theme(plot.margin = unit(c(0,0,0,0), "pt"))
+
     return(full_hm)
 
 }
@@ -411,13 +415,8 @@ ggheatmap <- function(table,
         geom_raster() +
         labs(fill = paste(group_vars(table), collapse = " | ")) +
         guides(fill = guide_legend(ncol = leg_ncol)) +
-        .theme_track(fontsize)
-
-    if(show_rownames) {
-        track_plot <- track_plot + scale_y_discrete(expand = c(0,0))
-    } else {
-        track_plot <- track_plot + scale_y_discrete(expand = c(0,0), position = 'right')
-    }
+        .theme_track(fontsize) +
+        scale_y_discrete(expand = c(0,0), position = "right")
 
     if(!is.null(group_colors)) {
         track_plot <- track_plot +

@@ -1,16 +1,40 @@
 Package: ggheatmapper
 Type: Package
 Title: Tile-able heatmaps using ggheatmap and patchwork
-Version: 0.2.1
-Author: Clarice S. Groeneveld
-Maintainer: Clarice S. Groeneveld <clari.groeneveld@gmail.com>
-Description: Provides a framework for making complex multi-faceted heatmaps using ggplot2 and patchwork.
-Depends: R (>= 4.0.0), tidyverse, patchwork
-Imports: ggplot2, dplyr, forcats, tibble, tidyr, magrittr, ggtree, rlist, stringr, ggrepel, scales
-Suggests: rmarkdown, usethis, knitr
+Version: 1.0.0
+Authors@R: person("Clarice", "Groeneveld", email = "clari.groeneveld@gmail.com", role = c("aut", "cre"))
+Description: Provides a framework for making complex, multi‑faceted heatmaps using ggplot2, patchwork and ggtree.
+Depends: 
+    R (>= 4.0.0)
+Imports:
+    tidyverse,
+    patchwork,
+    ggplot2,
+    dplyr,
+    forcats,
+    tibble,
+    tidyr,
+    magrittr,
+    ggtree,
+    rlist,
+    stringr,
+    ggrepel,
+    scales
+Suggests:
+    rmarkdown,
+    usethis,
+    knitr
+Remotes:
+    bioc::3.21/ggtree
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Roxygen: list(markdown = TRUE)
+Roxygen:
+    list(markdown = TRUE)
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
+biocViews:
+    Heatmaps,
+    Visualization,
+    Annotation
+

@@ -164,13 +164,8 @@ add_matrix_track <- function(gghm,
         ggplot(aes(observations, name, fill = value)) +
             geom_tile() +
         labs(fill = tcol) +
-        .theme_track(fontsize)
-
-    if(show_rownames) {
-        tplot <- tplot + scale_y_discrete(expand = c(0,0))
-    } else {
-        tplot <- tplot + scale_y_discrete(expand = c(0,0), position = 'right')
-    }
+        .theme_track(fontsize) +
+        scale_y_discrete(expand = c(0,0), position = 'right')
 
     #-- Adjust color
     tpal <- track_colors[[tcol]]
