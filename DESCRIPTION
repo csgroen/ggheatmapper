@@ -1,7 +1,7 @@
 Package: ggheatmapper
 Type: Package
 Title: Tile-able heatmaps using ggheatmap and patchwork
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: person("Clarice", "Groeneveld", email = "clari.groeneveld@gmail.com", role = c("aut", "cre"))
 Description: Provides a framework for making complex, multi‑faceted heatmaps using ggplot2, patchwork and ggtree.
 Depends: 
@@ -31,10 +31,9 @@ Encoding: UTF-8
 LazyData: true
 Roxygen:
     list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 biocViews:
     Heatmaps,
     Visualization,
     Annotation
-

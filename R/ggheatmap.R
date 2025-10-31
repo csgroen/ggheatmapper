@@ -292,8 +292,9 @@ ggheatmap <- function(table,
 # Plots
 #' @importFrom tibble tibble
 #' @importFrom dplyr left_join
-#' @importFrom ggplot2 ggplot aes facet_grid geom_raster geom_tile scale_fill_distiller scale_fill_gradientn guides guide_colorbar theme
+#' @importFrom ggplot2 ggplot aes facet_grid geom_raster geom_tile scale_fill_distiller scale_fill_gradientn guides guide_colorbar theme element_text scale_y_discrete labeller
 #' @importFrom scales squish
+#' @importFrom stringr str_wrap
 .plot_ggheatmap <- function(pptable, hm_colors, breaks,
                             rows_title, column_title, colors_title,
                             show_rownames, show_colnames, color_values, raster,
@@ -302,17 +303,20 @@ ggheatmap <- function(table,
     if(facetted) {
         # row_table <- stack(row_list) %>% as_tibble() %>% dplyr::rename(rows = values, rgroup = ind)
         row_levels <- levels(pptable$rows)
+        # Wrap long facet labels
+        wrapped_names <- str_wrap(names(row_list), width = 20)
+        names(wrapped_names) <- names(row_list)
+
         row_table <- tibble(rows = unlist(row_list),
                             rgroup = factor(rep(names(row_list), sapply(row_list, length)),
                                             levels = names(row_list)))
         pptable <- left_join(pptable, row_table, by = 'rows') %>%
             mutate(rows = factor(rows, levels = row_levels))
 
-        if(show_rownames) {
-            gghm <- ggplot(pptable) + facet_grid(rows = 'rgroup', scales = 'free_y', space = 'free_y')
-        } else {
-            gghm <- ggplot(pptable) + facet_grid(rows = 'rgroup', scales = 'free_y', space = 'free_y', switch = "y")
-        }
+        gghm <- ggplot(pptable) +
+            facet_grid(rows = 'rgroup', scales = 'free_y', space = 'free_y',
+                      labeller = labeller(rgroup = wrapped_names)) +
+            scale_y_discrete(position = "left")
 
     } else {
         gghm <- ggplot(pptable)
@@ -351,6 +355,12 @@ ggheatmap <- function(table,
             theme(axis.text.x = element_blank(),
                   axis.ticks.x = element_blank())
     }
+    if(facetted) {
+        gghm <- gghm +
+            theme(strip.text.y.right = element_text(angle = 0, hjust = 0),
+                  strip.placement = "outside",
+                  axis.text.y = element_text(hjust = 0))
+    }
     return(gghm)
 }
 #' @importFrom magrittr %>%
@@ -383,18 +393,17 @@ ggheatmap <- function(table,
 .plot_dendro <- function(cluster_obj, type = "cols", dend_lwd) {
     if(is.null(cluster_obj))
         return(plot_spacer())
+    
+    dend_plot <- ggtree(cluster_obj, size = dend_lwd) |> suppressWarnings()
 
     if(type == "cols") {
-        dend_plot <-  ggtree(cluster_obj, size = dend_lwd)
-        root <- which(dend_plot[[1]]$parent == dend_plot[[1]]$node)
+        root <- which(dend_plot$data$parent == dend_plot$data$node)
         dendro <- dend_plot +
             rotate(node = root) +
             coord_flip() +
             scale_x_reverse()
         dend_plot <- dendro[[2]]
 
-    } else if (type == "rows") {
-        dend_plot <- ggtree(cluster_obj, size = dend_lwd)
     }
     dend_plot +
         theme(plot.margin = margin(0,0,0,0))
