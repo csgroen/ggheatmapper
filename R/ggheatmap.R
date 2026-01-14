@@ -546,7 +546,6 @@ ggheatmap <- function(table,
         d <- dist(pp_mat, method = dist_method)
     }
     return(hclust(d, method = clustering_method))
-
 }
 
 #-------------------------------------------------------------------------------
@@ -599,7 +598,33 @@ ggheatmap <- function(table,
             filter(! observations %in% na_rep) %>%
             mutate(observations = fct_drop(observations, as.character(na_rep)))
     }
-
+    
+    # Remove constant rows or columns
+    constant_obs <- table %>%
+        group_by(observations) %>%
+        summarize(n_unique_vals = length(unique(value))) %>%
+        filter(n_unique_vals == 1) %>%
+        pull(observations) %>%
+        as.vector()
+    
+    if(length(constant_obs) > 0) {
+        warning("Removing constant observations: ", paste0(constant_obs, collapse = ", "))
+        table <- table %>%
+            filter(!observations %in% constant_obs)
+    }
+    # Remove constant rows
+    constant_rows <- table %>%
+        group_by(rows) %>%
+        summarize(n_unique_vals = length(unique(value))) %>%
+        filter(n_unique_vals == 1) %>%
+        pull(rows) %>%
+        as.vector()
+    
+    if(length(constant_rows) > 0) {
+        warning("Removing constant variables: ", paste0(constant_rows, collapse = ", "))
+        table <- table %>% 
+            filter(!rows %in% constant_rows)
+    }
     return(table)
 }
 #-------------------------------------------------------------------------------
