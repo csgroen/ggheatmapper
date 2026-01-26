@@ -31,6 +31,7 @@ align_to_hm <- function(gghm, gplot,
     if(! "ggheatmap" %in% class(gghm)) {
         stop("`gghm` must be of class `ggheatmap`.")
     }
+
     gplot <- wrap_plots(gplot)
     params <- gghm$gghm$params
     plots <- gghm$gghm$plots

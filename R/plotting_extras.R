@@ -148,7 +148,7 @@ theme_quant <- function(...) {
               axis.ticks = element_line(color = "black"),
               axis.text = element_text(color = "black"),
               axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-              axis.text.y = element_text(hjust = 0),
+              axis.text.y = element_text(hjust = 1),
               plot.margin = margin(0,0,0,0),
               panel.spacing = unit(pspace, "pt"),
               legend.title = element_text(size = base_size),

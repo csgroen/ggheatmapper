@@ -106,7 +106,7 @@ add_matrix_track <- function(gghm,
                        fontsize = 11,
                        track_pos = "bottom",
                        legend_action = "collect") {
-
+    
     #-- Get data
     ppdf <- gghm$data %>%
         ungroup() %>%

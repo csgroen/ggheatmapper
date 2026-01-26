@@ -242,6 +242,7 @@ ggheatmap <- function(table,
                            dend_lwd, track_plot, grouped, group_prop,
                            cluster_rows, cluster_cols,
                            show_rownames, facetted) {
+    
     dend_row <- .plot_dendro(cluster_obs[["rows"]], type = "rows", dend_lwd) +
         labs(x = '') +
         plot_layout(tag_level = 'new') +
@@ -253,10 +254,11 @@ ggheatmap <- function(table,
     if(show_dend_row & show_dend_col & cluster_rows & cluster_cols) {
         h1 <- dend_prop_col; h3 <- 1-h1-h2;
         w1 <- dend_prop_row; w2 <- 1-w1
-        gghm <- gghm + scale_y_discrete(position = "right")
+        gghm <- gghm + scale_y_discrete(position = "right") + theme(axis.text.y = element_text(hjust = 0))
     } else if (show_dend_row & cluster_rows) {
         h1 <- 0; h3 <- 1-h2;
         w1 <- dend_prop_row; w2 <- 1-w1
+        gghm <- gghm + scale_y_discrete(position = "right") + theme(axis.text.y = element_text(hjust = 0))
     } else if (show_dend_col & cluster_cols) {
         h1 <- dend_prop_col; h3 <- 1-h1-h2
         w1 <- 0; w2 <- 1
