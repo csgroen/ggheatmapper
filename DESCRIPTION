@@ -1,7 +1,7 @@
 Package: ggheatmapper
 Type: Package
 Title: Tile-able heatmaps using ggheatmap and patchwork
-Version: 1.0.4
+Version: 1.0.5
 Authors@R: person("Clarice", "Groeneveld", email = "clari.groeneveld@gmail.com", role = c("aut", "cre"))
 Description: Provides a framework for making complex, multi‑faceted heatmaps using ggplot2, patchwork and ggtree.
 Depends: 
