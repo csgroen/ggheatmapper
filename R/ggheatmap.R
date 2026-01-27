@@ -178,6 +178,14 @@ ggheatmap <- function(table,
                                  row_list, dist_method, clustering_method)
     pptable <- cluster_res$pptable
     cluster_obs <- cluster_res$cluster_obs
+  
+    # Fix if cluster_cols=FALSE
+    if(!cluster_cols) {
+      obs_levels <- pull(table, colv)
+        if(!is.factor(obs_levels)) {
+            pptable <- pptable %>% mutate(observations = factor(observations, levels = obs_levels))
+        }
+    }
 
     # Plot heatmap
     gghm <- .plot_ggheatmap(pptable, hm_colors, hm_color_breaks,
@@ -544,7 +552,7 @@ ggheatmap <- function(table,
         pptable <- mutate(pptable, rows = factor(rows, levels = rowv))
     }
     return(list(pptable = pptable, cluster_obs = cluster_obs))
-}
+    }
 
 #' @importFrom stats as.dist dist hclust
 .hclust_data <- function(pp_mat, dist_method, clustering_method) {

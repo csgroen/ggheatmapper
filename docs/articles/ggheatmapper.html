@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggheatmapper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.5</span>
       </span>
     </div>
 
@@ -63,7 +63,7 @@ with ggplots</h1>
                         <h4 data-toc-skip class="author">Clarice S.
 Groeneveld</h4>
             
-            <h4 data-toc-skip class="date">2025-07-16</h4>
+            <h4 data-toc-skip class="date">2026-01-27</h4>
       
 
       <div class="hidden name"><code>ggheatmapper.Rmd</code></div>
@@ -91,11 +91,11 @@ expression matrix for bladder cancer samples:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr    </span> 1.1.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.1.5</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.5.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2  </span> 3.5.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble   </span> 3.2.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr    </span> 1.0.4     </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr    </span> 1.1.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.1.6</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.1     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.6.0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2  </span> 4.0.1     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble   </span> 3.3.0</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.2</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr    </span> 1.2.0     </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
@@ -116,7 +116,7 @@ expression matrix for bladder cancer samples:</p>
 <span>          show_colnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Running `ggheatmap` in matrix mode. If that's not intentional, provide a `colv`.</span></span>
 <span><span class="va">gghm</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-1-1.png" width="576"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-1-1.png" class="r-plt" alt="" width="576"></p>
 <p>This method still will support extending with
 <code>align_to_hm</code> but would not support <code>add_tracks</code>.
 You can still modify this by using <code>&amp;</code> and adding
@@ -124,7 +124,7 @@ You can still modify this by using <code>&amp;</code> and adding
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gghm</span> <span class="op">&amp;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-2-1.png" width="576"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="using-tables-with-more-variables">Using tables with more variables<a class="anchor" aria-label="anchor" href="#using-tables-with-more-variables"></a>
@@ -818,7 +818,7 @@ graphical, for demonstration:</p>
 <span></span>
 <span><span class="va">gr_gghm</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-5-1.png" width="720"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="720"></p>
 <p>Here, we can see that the heatmap is clustered in a semi-supervised
 manner (by <code>consensusClass</code>). It also enables
 <code>add_tracks</code>:</p>
@@ -862,7 +862,7 @@ tracks:</p>
 <span><span class="co">#&gt; Adding missing grouping variables: `consensusClass`</span></span>
 <span><span class="va">gr_gghm</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-7-1.png" width="768"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level3">
 <h3 id="aligning-new-plots">Aligning new plots<a class="anchor" aria-label="anchor" href="#aligning-new-plots"></a>
@@ -893,11 +893,11 @@ without this):</p>
 <span>  <span class="fu"><a href="../reference/theme_sparse.html">theme_quant</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: The `&lt;scale&gt;` argument of `guides()` cannot be `FALSE`. Use "none" instead as</span></span>
 <span><span class="co">#&gt; of ggplot2 3.3.4.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
 <span><span class="va">plt_corlines</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-8-1.png" width="480"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="480"></p>
 <p>The second plot should align to the rows. We can’t just use the
 <code>get_data</code> because it doesn’t contain the information to
 order our rows, but we can get this from <code>get_rowLevels</code>.
@@ -913,7 +913,7 @@ to:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_sparse.html">theme_sparse2</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">plt_row_annot</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-9-1.png" width="288"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="288"></p>
 <p>Finally, we can use <code>align_to_hm</code> to add these plots to
 the original hm with all panels properly aligned. Note the use of
 <code>legend_action = 'collect'</code> in the final call, that will
@@ -924,7 +924,7 @@ unite all the legends in a nice way:</p>
 <span>  <span class="fu"><a href="../reference/align_to_hm.html">align_to_hm</a></span><span class="op">(</span><span class="va">plt_row_annot</span>, pos <span class="op">=</span> <span class="st">"left"</span>, newplt_size_prop <span class="op">=</span> <span class="fl">0.08</span>, </span>
 <span>              legend_action <span class="op">=</span> <span class="st">"collect"</span>, tag_level <span class="op">=</span> <span class="st">'keep'</span><span class="op">)</span></span>
 <span><span class="va">gghm_complete</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-10-1.png" width="816"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="816"></p>
 <p>Note that you can still use the <code>patchwork</code>
 <code>&amp;</code> to make global changes to all plots:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -932,7 +932,7 @@ unite all the legends in a nice way:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">7</span><span class="op">)</span>,</span>
 <span>        legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">gghm_complete</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-11-1.png" width="768"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 </div>
 <div class="section level2">
@@ -955,7 +955,7 @@ For example:</p>
 <span>        axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span>, angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span>, vjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">plt_subtype_count</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-12-1.png" width="384"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="384"></p>
 <p>Then, we can just use standard <code>patchwork</code> to align the
 <code>ggheatmap</code> and our new plots (as they won’t be aligned with
 the heatmap part of the plot, but with the entire plot):</p>
@@ -966,7 +966,7 @@ the heatmap part of the plot, but with the entire plot):</p>
 <span></span>
 <span><span class="op">(</span><span class="va">new_col</span> <span class="op">|</span> <span class="va">gghm_complete</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>widths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.4</span>,<span class="fl">0.6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-13-1.png" width="1152"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="row-facetting">Row facetting<a class="anchor" aria-label="anchor" href="#row-facetting"></a>
@@ -994,7 +994,7 @@ heatmap in different facets if the <code>rowv</code> argument for the
 <span></span>
 <span><span class="va">gr_gghm</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">'collect'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-14-1.png" width="720"></p>
+<p><img src="ggheatmapper_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="720"></p>
 </div>
   </div>
 
@@ -1013,7 +1013,7 @@ heatmap in different facets if the <code>rowv</code> argument for the
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

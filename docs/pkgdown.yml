@@ -1,6 +1,6 @@
-pandoc: '3.4'
-pkgdown: 2.1.2
+pandoc: 3.6.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   ggheatmapper: ggheatmapper.html
-last_built: 2025-07-16T15:21Z
+last_built: 2026-01-27T15:59Z

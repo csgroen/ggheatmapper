@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ggheatmapper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.5</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
 <span>              scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>              show_colnames <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>              colors_title <span class="op">=</span> <span class="st">"Scaled exp"</span><span class="op">)</span></span></code></pre>
-<p><img src="simple_hm.png"></p>
+<p><img src="docs/simple_hm.png"></p>
 <p>But <em>shines</em> with tidy data, where each column represents a variable and each row represents and observation.</p>
 <p>When working with biological data (RNA-seq, single-cell, etc), often data is stored as <strong>genes x samples</strong>. But this makes it challenging to include other metadata available for samples. Here, I show how to manipulate data of this type to plot using <code>ggheatmapper</code>:</p>
 <pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ggheatmapper</span><span class="op">)</span></span>
@@ -129,7 +129,7 @@
 <span>        show_colnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="reference/add_tracks.html">add_tracks</a></span><span class="op">(</span>track_columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stage"</span>, <span class="st">"consensusClass"</span><span class="op">)</span>, track_prop <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>               track_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"stage"</span> <span class="op">=</span> <span class="st">"Reds"</span>, <span class="st">"consensusClass"</span> <span class="op">=</span> <span class="st">"Accent"</span><span class="op">)</span><span class="op">)</span></span></code></pre>
-<p><img src="hm_example.png"></p>
+<p><img src="docs/hm_example.png"></p>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
@@ -181,7 +181,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
