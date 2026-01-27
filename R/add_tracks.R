@@ -83,6 +83,7 @@ add_tracks <- function(gghm,
 #' @param color_limits NULL or a vector of two values, lower and upper limits
 #' for the colors. See: [ggplot2::scale_fill_gradientn()].
 #' @param rows_title A title for the variables in the rows
+#' @param show_colnames If TRUE, column names will be shown in the track plot.
 #' @param track_prop A number between 0 and 1, representing the height
 #' proportion between new tracks and the heatmap.
 #' @param fontsize Base fontsize for plot, which will be used by the theme.
@@ -102,11 +103,12 @@ add_matrix_track <- function(gghm,
                        colors_title = "value",
                        color_limits = NULL,
                        rows_title = NULL,
+                       show_colnames = FALSE,
                        track_prop = 0.3,
                        fontsize = 11,
                        track_pos = "bottom",
-                       legend_action = "collect") {
-    
+                       legend_action = "collect"
+                       ) {        
     #-- Get data
     ppdf <- gghm$data %>%
         ungroup() %>%
@@ -118,6 +120,21 @@ add_matrix_track <- function(gghm,
                                   colors_title, fontsize, pal_dir, color_limits) +
         guides(fill = guide_colorbar(direction = gghm$gghm$plots$hm$guides$fill$direction, title.position = "top")) +
         gghm$gghm$line_geom
+
+    if(show_colnames) {
+        mat_plt <- mat_plt +
+            theme(axis.text.x = element_text(color = "black", angle = 90, vjust = 0.5, hjust=1),
+                  axis.ticks.x = element_line())
+    }
+    # Make it backwards compatible
+    cluster_rows <- !is.null(hm$gghm$hclust$rows)
+    show_dend_row <- length(hm$gghm$plots$dend_row@layers) > 0
+
+    if(show_dend_row & cluster_rows) {
+        mat_plt <- mat_plt +
+            scale_y_discrete(position = "right") + 
+            theme(axis.text.y = element_text(color = "black", hjust = 0))
+    }
 
     if(!is.null(rows_title)) {
         mat_plt <- mat_plt +

@@ -210,7 +210,7 @@ ggheatmap <- function(table,
     full_hm <- .heatmap_panel(gghm, cluster_obs, show_dend_row, show_dend_col,
                               dend_prop_col, dend_prop_row, dend_lwd,
                               track_plot, grouped, group_prop, cluster_rows, cluster_cols,
-                              show_rownames, facetted) %>%
+                              show_rownames, facetted, show_colnames) %>%
         suppressMessages()
 
     # Add data
@@ -241,7 +241,7 @@ ggheatmap <- function(table,
                            dend_prop_col, dend_prop_row,
                            dend_lwd, track_plot, grouped, group_prop,
                            cluster_rows, cluster_cols,
-                           show_rownames, facetted) {
+                           show_rownames, facetted, show_colnames) {
     
     dend_row <- .plot_dendro(cluster_obs[["rows"]], type = "rows", dend_lwd) +
         labs(x = '') +
@@ -284,7 +284,12 @@ ggheatmap <- function(table,
                                 widths = c(w1,w2),
                                 hm_col = 2,
                                 hm_row = 3,
-                                show_rownames = show_rownames)
+                                cluster_rows = cluster_rows,
+                                cluster_cols = cluster_cols,
+                                show_dend_row = show_dend_row,
+                                show_dend_col = show_dend_col,
+                                show_rownames = show_rownames,
+                                show_colnames = show_colnames)
 
     return(full_hm)
 }
