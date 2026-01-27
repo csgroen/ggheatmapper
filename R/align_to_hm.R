@@ -102,7 +102,8 @@ align_to_hm <- function(gghm, gplot,
                           line_geom = gghm$gghm$line_geom,
                           hclust = gghm$gghm$hclust)
 
-    new_gghm <- new_gghm & theme(plot.margin = unit(c(0,0,0,0), "pt"))
+    new_gghm <- (new_gghm & theme(plot.margin = unit(c(0,0,0,0), "pt"))) +
+        plot_annotation(theme = theme(plot.margin = margin(1,1,1,1, unit = "cm")))
 
     return(new_gghm)
 

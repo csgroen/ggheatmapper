@@ -93,8 +93,8 @@ globalVariables(c(".pal_collection", "observations", "rows", "name", "value",
 #' @importFrom magrittr %>%
 #' @importFrom tibble rownames_to_column
 #' @importFrom dplyr is_grouped_df rename filter mutate
-#' @importFrom patchwork plot_layout
-#' @importFrom ggplot2 waiver
+#' @importFrom patchwork plot_layout plot_annotation
+#' @importFrom ggplot2 waiver theme
 #' @importFrom scales squish rescale
 #' @export
 ggheatmap <- function(table,
@@ -223,9 +223,10 @@ ggheatmap <- function(table,
     full_hm$gghm$line_geom <- line_geom
     full_hm$gghm$hclust <- cluster_obs
 
-    full_hm +
-        plot_layout(guides = "collect") &
-        theme(plot.margin = unit(c(0,0,0,0), "pt"))
+    (full_hm &
+        theme(plot.margin = unit(c(0,0,0,0), "pt"))) +
+        plot_layout(guides = "collect") +
+        plot_annotation(theme = theme(plot.margin = margin(1,1,1,1, unit = "cm")))
 
     return(full_hm)
 

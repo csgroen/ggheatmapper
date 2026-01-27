@@ -126,9 +126,9 @@ add_matrix_track <- function(gghm,
             theme(axis.text.x = element_text(color = "black", angle = 90, vjust = 0.5, hjust=1),
                   axis.ticks.x = element_line())
     }
-    # Make it backwards compatible
     cluster_rows <- !is.null(hm$gghm$hclust$rows)
-    show_dend_row <- length(hm$gghm$plots$dend_row@layers) > 0
+    # Make it backwards compatible
+    show_dend_row <- if_else(is.null(gghm$gghm$params$show_dend_row), FALSE, gghm$gghm$params$show_dend_row)
 
     if(show_dend_row & cluster_rows) {
         mat_plt <- mat_plt +
