@@ -12,6 +12,7 @@ add_matrix_track(
   colors_title = "value",
   color_limits = NULL,
   rows_title = NULL,
+  show_colnames = FALSE,
   track_prop = 0.3,
   fontsize = 11,
   track_pos = "bottom",
@@ -39,6 +40,8 @@ See: \code{\link[ggplot2:scale_brewer]{ggplot2::scale_color_brewer()}}}
 for the colors. See: \code{\link[ggplot2:scale_gradient]{ggplot2::scale_fill_gradientn()}}.}
 
 \item{rows_title}{A title for the variables in the rows}
+
+\item{show_colnames}{If TRUE, column names will be shown in the track plot.}
 
 \item{track_prop}{A number between 0 and 1, representing the height
 proportion between new tracks and the heatmap.}
