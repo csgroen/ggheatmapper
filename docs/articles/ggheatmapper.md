@@ -226,14 +226,18 @@ side across every stacked plot, so that panel edges all line up. That’s
 normally what you want, but it means a right-side axis *title*, which is
 otherwise a thin column, gets pushed out to match the width of the
 widest thing sharing that side — here, the heatmap’s legends — landing
-far away from its own tick labels. Wrapping `plt_corlines` with
-\[patchwork::wrap_elements()\] fixes this: it renders the plot to a
-self-contained grob first, so `patchwork` no longer sees its internal
-axis columns to union them with everything else’s:
+far away from its own tick labels. This can be worked around with
+[`patchwork::wrap_elements()`](https://patchwork.data-imaginist.com/reference/wrap_elements.html),
+but that comes at a real cost: it renders the plot to a fixed-size,
+self-contained grob, so it stops taking part in `patchwork`’s panel
+alignment altogether — the whole point of `align_to_hm`. A misplaced
+axis title is a cosmetic issue you can tweak away; a panel that’s no
+longer truly aligned defeats the purpose of the package, so we leave the
+title where `patchwork` puts it:
 
 ``` r
 gghm_complete <- gr_gghm %>%
-  align_to_hm(wrap_elements(plot = plt_corlines), newplt_size_prop = 0.3) %>%
+  align_to_hm(plt_corlines, newplt_size_prop = 0.3) %>%
   align_to_hm(plt_row_annot, pos = "left", newplt_size_prop = 0.08,
               legend_action = "collect", tag_level = 'keep')
 gghm_complete
