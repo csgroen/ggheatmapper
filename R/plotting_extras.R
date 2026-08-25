@@ -135,7 +135,7 @@ theme_quant <- function(...) {
         theme(panel.grid = element_blank(),
               axis.text.x = element_blank(),
               axis.title = element_blank(),
-              axis.text.y = element_text(color = "black"),
+              axis.text.y = element_text(color = "black", hjust = 0),
               axis.ticks.y = element_line(color = "black"),
               plot.margin = margin(0,0,0,0))
 

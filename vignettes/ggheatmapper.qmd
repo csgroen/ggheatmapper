@@ -1,13 +1,14 @@
 ---
 title: "ggheatmapper: Tile-able heatmaps that play well with ggplots"
 author: "Clarice S. Groeneveld"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+date: last-modified
+format:
+  html:
+    embed-resources: true
 vignette: >
-  %\VignetteIndexEntry{ggheatmap: Tile-able heatmaps that play well with ggplots}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{ggheatmapper: Tile-able heatmaps that play well with ggplots}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
-  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include = FALSE}
@@ -29,7 +30,7 @@ The simplest, yet less powerful, way to use `ggheatmapper` is with a matrix as-i
 Here, we demonstrate with a subset of a gene expression matrix for bladder cancer
 samples:
 
-```{r fig.width=6, fig.height=3}
+```{r fig.width=6, fig.height=4}
 library(tidyverse)
 library(patchwork)
 library(ggheatmapper)
@@ -51,7 +52,7 @@ gghm
 This method still will support extending with `align_to_hm` but would not support
 `add_tracks`. You can still modify this by using `&` and adding `theme`, for example:
 
-```{r fig.width=6, fig.height=3}
+```{r fig.width=6, fig.height=4}
 gghm &
   theme(axis.text = element_text(size = 6))
 ```
@@ -59,7 +60,7 @@ gghm &
 # Using tables with more variables
 
 If transpose our original table and extended it with new variables, we can unlock
-more features using `ggheatmap`. 
+more features using `ggheatmap`.
 
 ```{r eval = FALSE}
 sample_annot <- tcgaBLCA_ex$sample_annot %>% as_tibble()
@@ -84,7 +85,7 @@ tcgaBLCA_tb <- gexp %>%
   left_join(sample_annot, by = "sample") %>%
   tibble() %>%
   group_by(consensusClass)
-knitr::kable(head(tcgaBLCA_tb))
+knitr::kable(head(tcgaBLCA_tb), digits = 2)
 ```
 
 One of the additional features we unlock is using `grouping` with `group_by` to
@@ -141,12 +142,14 @@ gr_gghm +
 
 Here we'll make two different plots: one to align with the samples (columns) and
 another to align with the genes (rows). We can get the data from get_data, which
-is a good idea to facilitate further plotting because it will ensure your 
+is a good idea to facilitate further plotting because it will ensure your
 observations will be in the correct order. Then, here, we make a line-plot with
 the correlations of each sample to the centroid of the 6 consensus bladder cancer
 subtypes. Note the use of `theme_quant`, one of our suggested themes that look
 nice with `ggheatmap`s, and that we switch the y-axis to the right side to make
-the end-product look better (though everything will work without this):
+the end-product look better (though everything will work without this). Since we
+switched the y-axis to the right side, we also set `hjust = 0` on `axis.text.y` so
+the axis text hugs the tick marks instead of leaving a gap:
 
 ```{r fig.width=5, fig.height=3}
 tcgaBLCA_tb2 <- get_data(gr_gghm)
@@ -159,14 +162,15 @@ plt_corlines <- tcgaBLCA_tb2 %>%
   scale_y_continuous(position = "right") +
   scale_color_manual(values = c(`Ba.Sq` = "#fe4a49", LumNS = "#32837d", LumP = "#06d6a0", LumU = "#009fb7",
                                 `Stroma.rich` = "#f9c80e", `NE.like` = "#7d5ba6")) +
-  guides(color = FALSE) +
+  guides(color = "none") +
   labs(y = "Correlation\n to centroid") +
-  theme_quant()
+  theme_quant() +
+  theme(axis.text.y = element_text(hjust = 0))
 plt_corlines
 ```
 
 The second plot should align to the rows. We can't just use the `get_data` because
-it doesn't contain the information to order our rows, but we can get this from 
+it doesn't contain the information to order our rows, but we can get this from
 `get_rowLevels`. Here, we plot which signature each gene in our example data belongs
 to:
 
@@ -178,19 +182,28 @@ plt_row_annot <- tcgaBLCA_ex$gene_annot %>%
   geom_tile() +
   labs(y = "") +
   coord_flip() +
-  theme_sparse2()
+  theme_void()
 plt_row_annot
 ```
 
 Finally, we can use `align_to_hm` to add these plots to the original hm with all
 panels properly aligned. Note the use of `legend_action = 'collect'` in the final
-call, that will unite all the legends in a nice way:
+call, that will unite all the legends in a nice way.
 
+When plots are stacked via `align_to_hm`, `patchwork` unions the widths of the
+non-panel columns (axis text, axis title) that sit on the same side across every
+stacked plot, so that panel edges all line up. That's normally what you want, but
+it means a right-side axis *title*, which is otherwise a thin column, gets pushed
+out to match the width of the widest thing sharing that side — here, the heatmap's
+legends — landing far away from its own tick labels. Wrapping `plt_corlines` with
+[patchwork::wrap_elements()] fixes this: it renders the plot to a self-contained
+grob first, so `patchwork` no longer sees its internal axis columns to union them
+with everything else's:
 
 ```{r fig.height=6.5, fig.width=8.5}
 gghm_complete <- gr_gghm %>%
-  align_to_hm(plt_corlines, newplt_size_prop = 0.3) %>%
-  align_to_hm(plt_row_annot, pos = "left", newplt_size_prop = 0.08, 
+  align_to_hm(wrap_elements(plot = plt_corlines), newplt_size_prop = 0.3) %>%
+  align_to_hm(plt_row_annot, pos = "left", newplt_size_prop = 0.08,
               legend_action = "collect", tag_level = 'keep')
 gghm_complete
 ```
@@ -213,12 +226,12 @@ other aligning packages. For example:
 ```{r fig.width=4, fig.height=3}
 plt_subtype_count <- ggplot(sample_annot, aes(consensusClass, fill = consensusClass)) +
   geom_bar() +
-  scale_fill_manual(values = c(`Ba/Sq` = "#fe4a49", LumNS = "#32837d", 
+  scale_fill_manual(values = c(`Ba/Sq` = "#fe4a49", LumNS = "#32837d",
                                LumP = "#06d6a0", LumU = "#009fb7",
-                                `Stroma-rich` = "#f9c80e", 
+                                `Stroma-rich` = "#f9c80e",
                                `NE-like` = "#7d5ba6")) +
   labs(y = 'Number of samples') +
-  guides(fill = FALSE) +
+  guides(fill = "none") +
   theme_quant() +
   theme(axis.ticks.x = element_line(color = "black"),
         axis.text.x = element_text(color = "black", angle = 45, hjust = 1, vjust = 1))
@@ -265,4 +278,3 @@ gr_gghm <- ggheatmap(tcgaBLCA_tb,
 gr_gghm +
   plot_layout(guides = 'collect')
 ```
-

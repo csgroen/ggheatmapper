@@ -1,7 +1,7 @@
 Package: ggheatmapper
 Type: Package
 Title: Tile-able heatmaps using ggheatmap and patchwork
-Version: 1.0.6
+Version: 1.1.0
 Authors@R: person("Clarice", "Groeneveld", email = "clari.groeneveld@gmail.com", role = c("aut", "cre"))
 Description: Provides a framework for making complex, multi‑faceted heatmaps using ggplot2, patchwork and ggtree.
 Depends: 
@@ -23,7 +23,8 @@ Imports:
 Suggests:
     rmarkdown,
     usethis,
-    knitr
+    knitr,
+    quarto
 Remotes:
     bioc::3.21/ggtree
 License: GPL-3
@@ -32,7 +33,8 @@ LazyData: true
 Roxygen:
     list(markdown = TRUE)
 RoxygenNote: 7.3.3
-VignetteBuilder: knitr
+VignetteBuilder: quarto
+SystemRequirements: Quarto command line tools (https://github.com/quarto-dev/quarto-cli)
 biocViews:
     Heatmaps,
     Visualization,

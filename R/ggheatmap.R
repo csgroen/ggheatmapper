@@ -374,8 +374,7 @@ ggheatmap <- function(table,
     if(facetted) {
         gghm <- gghm +
             theme(strip.text.y.right = element_text(angle = 0, hjust = 0),
-                  strip.placement = "outside",
-                  axis.text.y = element_text(hjust = 0))
+                  strip.placement = "outside")
     }
     return(gghm)
 }
